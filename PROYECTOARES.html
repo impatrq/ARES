@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A.R.E.S — Arrhythmia Real-time Evaluation System</title>
+
+<!-- Fontshare: Clash Display + Cabinet Grotesk -->
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=cabinet-grotesk@300,400,500,700,800&display=swap" rel="stylesheet">
+<!-- Google: Fira Code for technical labels -->
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════
+   TOKENS
+══════════════════════════════════════ */
+:root {
+  /* Core palette */
+  --ink:      #120809;
+  --ink-2:    #1a0f10;
+  --ink-3:    #241718;
+  --paper:    #ffffff;
+  --paper-2:  #faf6f6;
+  --paper-3:  #f2e9ea;
+
+  /* Text on dark */
+  --on-dark-1: #f7eded;
+  --on-dark-2: #cfa8aa;
+  --on-dark-3: #705456;
+
+  /* Text on light */
+  --on-light-1: #1a0f10;
+  --on-light-2: #4a3133;
+  --on-light-3: #8a6e70;
+
+  /* Brand */
+  --violet:   #8f353e;
+  --violet-2: #ad434d;
+  --violet-3: #cc545f;
+  --violet-bg:#fdf2f3;
+  --cyan:     #b75252;
+  --cyan-2:   #e9c46a;
+  --cyan-bg:  #fef8f0;
+
+  /* Signal */
+  --red:      #e8293a;
+  --green:    #00cc6a;
+  --amber:    #f59e0b;
+
+  /* Borders */
+  --bd-dark:  rgba(255, 89, 89, 0.651);
+  --bd-dk2:   rgba(224, 0, 0, 0.28);
+  --bd-light: rgba(143, 44, 44, 0.866);
+  --bd-lt2:   rgba(240, 29, 29, 0.32);
+
+  /* Layout */
+  --max:      1100px;
+  --gap:      clamp(20px, 5vw, 80px);
+  --pad-v:    clamp(64px, 8vw, 112px);
+
+  /* Type */
+  --f-display: 'Clash Display', sans-serif;
+  --f-body:    'Cabinet Grotesk', sans-serif;
+  --f-mono:    'Fira Code', monospace;
+}
+
+/* ══════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: var(--f-body); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+img, svg { display: block; max-width: 100%; }
+a { text-decoration: none; }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--violet); border-radius: 2px; }
+
+/* ══════════════════════════════════════
+   LAYOUT WRAPPER — prevents clipping
+══════════════════════════════════════ */
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gap);
+}
+
+/* ══════════════════════════════════════
+   SECTION MODES
+══════════════════════════════════════ */
+.s-dark  { background: var(--ink);   color: var(--on-dark-1); }
+.s-dark2 { background: var(--ink-2); color: var(--on-dark-1); }
+.s-light { background: var(--paper); color: var(--on-light-1); }
+.s-soft  { background: var(--paper-2); color: var(--on-light-1); }
+
+/* ══════════════════════════════════════
+   TYPOGRAPHY SYSTEM
+══════════════════════════════════════ */
+.t-display {
+  font-family: var(--f-display);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-size: clamp(36px, 6vw, 64px);
+}
+
+.t-hero {
+  font-family: var(--f-display);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-size: clamp(80px, 15vw, 160px);
+}
+
+.t-sub {
+  font-family: var(--f-body);
+  font-weight: 400;
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.7;
+}
+
+.t-label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.t-stat {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(52px, 8vw, 88px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.t-body {
+  font-family: var(--f-body);
+  font-size: clamp(15px, 1.8vw, 17px);
+  line-height: 1.75;
+  font-weight: 400;
+}
+
+/* Gradient text */
+.grad-c { background: linear-gradient(130deg, var(--cyan), var(--violet-3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.grad-v { background: linear-gradient(130deg, var(--violet), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.col-c  { color: var(--cyan); }
+.col-v  { color: var(--violet-2); }
+.col-r  { color: var(--red); }
+.col-g  { color: var(--green); }
+
+/* ══════════════════════════════════════
+   CHIPS / LABELS
+══════════════════════════════════════ */
+.chip-dark {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--cyan);
+  border: 1px solid var(--bd-dk2);
+  background: rgba(224, 0, 0, 0.06);
+  padding: 6px 14px; border-radius: 2px;
+}
+
+.chip-light {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--violet);
+  border: 1px solid var(--bd-lt2);
+  background: rgba(240, 29, 29, 0.05);
+  padding: 6px 14px; border-radius: 2px;
+}
+
+.dot-live {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: blink 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
+
+/* ══════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-display); font-weight: 600;
+  font-size: 14px; letter-spacing: 0.02em;
+  padding: 16px 36px; border-radius: 3px;
+  cursor: pointer; transition: all 0.25s; border: none;
+  text-decoration: none;
+}
+
+.btn-fill {
+  background: linear-gradient(135deg, var(--violet), var(--violet-2));
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(245, 69, 69, 0.4), 0 8px 32px rgba(240, 29, 29, 0.3);
+}
+.btn-fill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px rgba(245, 69, 69, 0.6), 0 12px 40px rgba(240, 29, 29, 0.45);
+}
+
+.btn-ghost-dk {
+  background: transparent; color: var(--cyan);
+  border: 1px solid var(--bd-dk2);
+}
+.btn-ghost-dk:hover { background: rgba(224, 0, 0, 0.07); border-color: var(--cyan); }
+
+.btn-ghost-lt {
+  background: transparent; color: var(--violet);
+  border: 1px solid var(--bd-lt2);
+}
+.btn-ghost-lt:hover { background: var(--violet-bg); border-color: var(--violet); }
+
+.btn-cta-big {
+  background: linear-gradient(135deg, var(--violet), var(--violet-2));
+  color: #f3f8f3; font-size: 16px; padding: 20px 52px;
+  box-shadow: 0 0 0 1px rgba(245, 69, 69, 0.5), 0 12px 48px rgba(240, 29, 29, 0.35);
+}
+.btn-cta-big:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 1px rgba(245, 69, 69, 0.7), 0 20px 60px rgba(240, 29, 29, 0.5);
+}
+
+/* Arrow icon in buttons */
+.btn-arrow {
+  width: 18px; height: 18px; flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.btn:hover .btn-arrow { transform: translateX(3px); }
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-inline: var(--gap);
+  max-width: 100%; /* nav spans full width */
+  background: rgba(14, 6, 15, 0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--bd-dark);
+}
+
+.nav-inner {
+  width: 100%; max-width: calc(var(--max) + var(--gap) * 2);
+  margin-inline: auto;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--f-display); font-weight: 700;
+  font-size: 18px; letter-spacing: 0.25em;
+  color: var(--cyan);
+  text-shadow: 0 0 20px rgba(224, 0, 0, 0.5);
+}
+
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a {
+  font-family: var(--f-body); font-size: 13px; font-weight: 500;
+  color: var(--on-dark-2); transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--cyan); }
+
+.nav-cta {
+  font-family: var(--f-display); font-weight: 600; font-size: 12px;
+  letter-spacing: 0.05em; padding: 9px 22px; border-radius: 3px;
+  background: var(--violet); color: #ffffff; border: none;
+  cursor: pointer; text-decoration: none; transition: all 0.2s;
+}
+.nav-cta:hover { background: var(--violet-2); box-shadow: 0 4px 20px rgba(240, 29, 29, 0.4); }
+
+@media (max-width: 820px) {
+  .nav-links { display: none; }
+  nav { padding-inline: 20px; }
+}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero {
+  min-height: 100svh;
+  display: grid; place-items: center;
+  padding-block: 100px 80px;
+  background: var(--ink);
+  position: relative; overflow: hidden;
+}
+
+/* Subtle grid */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(224, 0, 0, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,194,224,0.035) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none;
+}
+
+/* Glow orbs */
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(120px); pointer-events: none; will-change: transform;
+}
+.orb-1 { width: 700px; height: 700px; background: rgba(240, 29, 29, 0.14); top: -200px; left: -200px; animation: orbF 10s ease-in-out infinite; }
+.orb-2 { width: 550px; height: 550px; background: rgba(0,194,224,0.09); bottom: -150px; right: -150px; animation: orbF 13s ease-in-out infinite reverse; }
+
+@keyframes orbF { 0%,100%{transform:translate(0,0);} 50%{transform:translate(40px,-50px);} }
+
+.hero-content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 28px;
+}
+
+/* Opening hook */
+.hero-hook {
+  font-family: var(--f-body); font-weight: 500;
+  font-size: clamp(16px,2.5vw,22px);
+  color: var(--on-dark-2);
+  max-width: 640px;
+  line-height: 1.55;
+  animation: fadeUp 0.7s ease both;
+}
+.hero-hook strong { color: var(--cyan); font-weight: 700; }
+
+.hero-title {
+  font-family: var(--f-display); font-weight: 700;
+  font-size: clamp(88px, 16vw, 172px);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  animation: fadeUp 0.7s 0.1s ease both;
+}
+.ht-a { color: var(--cyan);     text-shadow: 0 0 60px rgba(224, 0, 0, 0.4); }
+.ht-r { color: var(--violet-2); text-shadow: 0 0 60px rgba(245, 69, 69, 0.4); }
+.ht-e { color: var(--cyan);     text-shadow: 0 0 60px rgba(224, 0, 0, 0.4); }
+.ht-s { color: var(--violet-2); text-shadow: 0 0 60px rgba(245, 69, 69, 0.4); }
+.ht-dot { color: var(--ink-3); font-size: 0.4em; vertical-align: middle; }
+
+.hero-full { font-family: var(--f-body); font-weight: 300; font-size: clamp(13px,1.8vw,17px); letter-spacing: 0.3em; color: var(--on-dark-3); text-transform: uppercase; animation: fadeUp 0.7s 0.2s ease both; }
+
+.hero-desc {
+  max-width: 600px;
+  font-family: var(--f-body); font-weight: 400;
+  font-size: clamp(16px,2vw,19px); line-height: 1.7;
+  color: var(--on-dark-2);
+  animation: fadeUp 0.7s 0.28s ease both;
+}
+.hero-desc em { color: var(--red); font-style: normal; font-weight: 700; }
+
+.hero-actions {
+  display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;
+  animation: fadeUp 0.7s 0.36s ease both;
+}
+
+/* Stat bar */
+.hero-stats {
+  display: flex; flex-wrap: wrap; gap: 0;
+  border: 1px solid var(--bd-dark);
+  background: rgba(12,20,34,0.6);
+  animation: fadeUp 0.7s 0.44s ease both;
+  width: 100%; max-width: 680px;
+}
+.hstat {
+  flex: 1; min-width: 140px;
+  padding: 18px 24px;
+  border-right: 1px solid var(--bd-dark);
+  text-align: center;
+}
+.hstat:last-child { border-right: none; }
+.hstat-num { font-family: var(--f-display); font-weight: 700; font-size: 28px; color: var(--cyan); margin-bottom: 2px; }
+.hstat-lbl { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--on-dark-3); text-transform: uppercase; }
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  animation: fadeUp 1s 0.8s ease both;
+}
+.scroll-hint span { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--on-dark-3); text-transform: uppercase; }
+.scroll-line { width: 1px; height: 40px; background: linear-gradient(var(--on-dark-3), transparent); animation: scrollLine 1.8s ease-in-out infinite; }
+@keyframes scrollLine { 0%,100%{transform:scaleY(1);opacity:.5;} 50%{transform:scaleY(.5);opacity:1;} }
+
+/* ECG divider */
+.ecg-div {
+  width: 100%; overflow: hidden; line-height: 0;
+}
+.ecg-path-d {
+  stroke: var(--cyan); stroke-width: 1.5; fill: none; opacity: .45;
+  stroke-dasharray: 2400; stroke-dashoffset: 2400;
+  animation: drawECG 3.5s linear forwards;
+}
+.ecg-path-l { stroke: var(--violet); stroke-width: 1.5; fill: none; opacity: .25; }
+@keyframes drawECG { to { stroke-dashoffset: 0; } }
+
+/* ══════════════════════════════════════
+   SECTION PADDING
+══════════════════════════════════════ */
+.section { padding-block: var(--pad-v); }
+.section-sm { padding-block: calc(var(--pad-v) * 0.65); }
+
+/* Section header */
+.section-hd { margin-bottom: clamp(40px, 5vw, 72px); }
+.section-hd .chip-dark,
+.section-hd .chip-light { margin-bottom: 20px; }
+
+/* ══════════════════════════════════════
+   DIVIDERS
+══════════════════════════════════════ */
+.div-dark { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--bd-dk2), transparent); }
+.div-light { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--bd-lt2), transparent); }
+
+/* ══════════════════════════════════════
+   PROBLEM — STATS GRID (dark cards on light bg)
+══════════════════════════════════════ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2px;
+  background: var(--bd-lt2);
+  border: 1px solid var(--bd-lt2);
+  margin-block: 52px;
+}
+.stat-card {
+  background: var(--paper);
+  padding: clamp(28px,4vw,48px) clamp(20px,3vw,36px);
+  position: relative; overflow: hidden;
+  transition: background 0.25s;
+}
+.stat-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  opacity: 0; transition: opacity 0.25s;
+}
+.stat-card:hover { background: var(--paper-3); }
+.stat-card:hover::after { opacity: 1; }
+.sc-r::after { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+.sc-v::after { background: linear-gradient(90deg, transparent, var(--violet), transparent); }
+.sc-c::after { background: linear-gradient(90deg, transparent, var(--cyan), transparent); }
+.sc-g::after { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+
+.stat-n { font-family: var(--f-display); font-weight: 700; font-size: clamp(48px,7vw,80px); line-height: 1; letter-spacing: -0.03em; margin-bottom: 12px; }
+.sn-r { color: var(--red); }
+.sn-v { color: var(--violet); }
+.sn-c { color: var(--cyan); }  /* cyan renders dark enough on white */
+.sn-c { color: #007fa0; } /* adjusted for white bg legibility */
+.sn-g { color: #007a40; }
+.stat-label { font-family: var(--f-body); font-size: 15px; font-weight: 600; color: var(--on-light-2); margin-bottom: 8px; line-height: 1.4; }
+.stat-src { font-family: var(--f-mono); font-size: 9px; color: var(--on-light-3); letter-spacing: 0.08em; }
+
+/* ══════════════════════════════════════
+   RISK GROUPS
+══════════════════════════════════════ */
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px; margin-top: 52px;
+}
+.group-card {
+  border: 1px solid var(--bd-light);
+  padding: clamp(24px,3vw,36px) clamp(18px,2.5vw,28px);
+  background: var(--paper); text-align: center;
+  transition: all 0.25s; cursor: default;
+}
+.group-card:hover {
+  border-color: var(--violet);
+  box-shadow: 0 4px 28px rgba(240, 29, 29, 0.1);
+  transform: translateY(-4px);
+}
+.gc-icon {
+  width: 48px; height: 48px; margin: 0 auto 16px;
+  border: 1px solid var(--bd-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--violet-bg);
+  transition: all 0.25s;
+}
+.group-card:hover .gc-icon { background: var(--violet); border-color: var(--violet); }
+.group-card:hover .gc-icon svg path,
+.group-card:hover .gc-icon svg circle,
+.group-card:hover .gc-icon svg polyline,
+.group-card:hover .gc-icon svg rect,
+.group-card:hover .gc-icon svg line { stroke: #fff; }
+.gc-title { font-family: var(--f-display); font-weight: 600; font-size: 14px; letter-spacing: 0.03em; color: var(--violet); margin-bottom: 8px; text-transform: uppercase; }
+.gc-desc { font-size: 13px; color: var(--on-light-3); line-height: 1.6; }
+
+/* Alert box */
+.alert-box {
+  margin-top: 52px;
+  border: 1px solid rgba(232,41,58,0.25);
+  background: rgba(232,41,58,0.04);
+  padding: clamp(24px,4vw,40px) clamp(20px,4vw,44px);
+}
+.alert-box p { font-size: clamp(16px,2.2vw,20px); line-height: 1.7; color: var(--on-light-2); }
+
+/* Problem CTA */
+.section-cta {
+  text-align: center; margin-top: 56px; padding-top: 48px;
+  border-top: 1px solid var(--bd-light);
+}
+.section-cta .hook-line {
+  font-family: var(--f-display); font-weight: 600;
+  font-size: clamp(18px, 3vw, 26px);
+  color: var(--on-light-1); margin-bottom: 8px;
+}
+.section-cta .hook-sub {
+  font-size: 15px; color: var(--on-light-3); margin-bottom: 28px; line-height: 1.6;
+}
+
+/* ══════════════════════════════════════
+   SOLUTION (dark)
+══════════════════════════════════════ */
+.sol-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 80px);
+  align-items: start;
+}
+@media(max-width:860px) { .sol-grid { grid-template-columns: 1fr; } }
+
+.sol-text .t-body { color: var(--on-dark-2); margin-bottom: 18px; }
+
+.feat-list { list-style: none; margin-top: 36px; display: flex; flex-direction: column; gap: 12px; }
+.feat-item {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: clamp(14px,2vw,20px) clamp(14px,2vw,20px);
+  border: 1px solid var(--bd-dark);
+  transition: all 0.25s;
+}
+.feat-item:hover { border-color: var(--cyan); background: rgba(0,194,224,0.04); }
+.feat-ico {
+  width: 40px; height: 40px; flex-shrink: 0;
+  border: 1px solid var(--bd-dk2);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(224, 0, 0, 0.203);
+}
+.feat-title { font-family: var(--f-display); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--cyan); margin-bottom: 4px; text-transform: uppercase; }
+.feat-desc { font-size: 13px; color: var(--on-dark-3); line-height: 1.55; }
+
+/* Flow diagram */
+.diag {
+  background: var(--ink-2);
+  border: 1px solid var(--bd-dk2);
+  padding: clamp(28px,4vw,44px) clamp(24px,3.5vw,40px);
+}
+.diag-title { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.18em; color: var(--cyan); text-transform: uppercase; text-align: center; margin-bottom: 28px; }
+.flow-step {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 16px;
+  border: 1px solid var(--bd-dark);
+  margin-bottom: 6px; transition: border-color 0.2s;
+}
+.flow-step:hover { border-color: var(--violet-2); }
+.flow-n { font-family: var(--f-mono); font-size: 10px; color: var(--violet-3); width: 22px; flex-shrink: 0; }
+.flow-l { font-family: var(--f-body); font-size: 13px; font-weight: 500; color: var(--on-dark-1); }
+.flow-arr { text-align: center; font-family: var(--f-mono); font-size: 12px; color: var(--on-dark-3); padding: 3px 0; }
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 22px; }
+.comp-tag {
+  background: rgba(240, 29, 29, 0.1); border: 1px solid rgba(240, 29, 29, 0.22);
+  padding: 8px 10px; text-align: center;
+  font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--violet-3);
+}
+
+/* ══════════════════════════════════════
+   FAVALORO (dark)
+══════════════════════════════════════ */
+.fav-wrap {
+  border: 1px solid var(--bd-dk2);
+  background: linear-gradient(135deg, var(--ink-2) 0%, var(--ink-3) 100%);
+  padding: clamp(36px,5vw,64px) clamp(28px,4.5vw,60px);
+  position: relative; overflow: hidden;
+}
+.fav-wrap::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 75% 50%, rgba(240, 29, 29, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.fav-inner {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: clamp(36px,5vw,64px);
+  align-items: center;
+  position: relative;
+}
+@media(max-width:760px) { .fav-inner { grid-template-columns: 1fr; } }
+
+.fav-badge {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 16px;
+}
+.fav-emblem {
+  width: 96px; height: 96px; border-radius: 50%;
+  border: 2px solid var(--cyan);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(233, 233, 233, 0.06);
+  animation: pulseGlow 2.8s ease-in-out infinite;
+}
+@keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(242, 244, 244, 0.15);} 50%{box-shadow:0 0 44px rgba(237, 233, 233, 0.32);} }
+.fav-name { font-family: var(--f-display); font-size: 18px; font-weight: 700; color: var(--on-dark-1); line-height: 1.2; }
+.fav-sub { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--cyan); text-transform: uppercase; }
+.fav-link { font-family: var(--f-mono); font-size: 10px; color: var(--on-dark-3); letter-spacing: 0.05em; transition: color 0.2s; }
+.fav-link:hover { color: var(--cyan); }
+
+.fav-body h3 { font-family: var(--f-display); font-size: clamp(22px,3vw,30px); font-weight: 700; color: var(--on-dark-1); margin-bottom: 18px; line-height: 1.2; }
+.fav-body p { font-size: 15px; color: var(--on-dark-2); line-height: 1.8; margin-bottom: 14px; }
+.fav-prop {
+  border: 1px solid rgba(0,204,106,0.28);
+  background: rgba(0,204,106,0.04);
+  padding: clamp(18px,3vw,28px) clamp(16px,2.5vw,28px);
+  margin-top: 24px;
+}
+.fav-prop-lbl { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--green); text-transform: uppercase; margin-bottom: 10px; display: block; }
+.fav-prop p { font-size: 14px; color: var(--on-dark-1); line-height: 1.75; margin-bottom: 0; }
+.fav-prop strong { color: var(--green); }
+
+/* ══════════════════════════════════════
+   MARKET (light)
+══════════════════════════════════════ */
+.mkt-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px; margin-top: 52px;
+}
+.mkt-card {
+  border: 1px solid var(--bd-light);
+  padding: clamp(24px,3.5vw,40px) clamp(18px,3vw,30px);
+  background: var(--paper); text-align: center;
+  transition: all 0.25s;
+}
+.mkt-card:hover { border-color: var(--violet); box-shadow: 0 6px 32px rgba(240, 29, 29, 0.1); transform: translateY(-3px); }
+.mkt-val { font-family: var(--f-display); font-weight: 700; font-size: clamp(32px,5vw,48px); letter-spacing: -0.02em; color: var(--violet); margin-bottom: 8px; }
+.mkt-label { font-size: 14px; font-weight: 600; color: var(--on-light-2); margin-bottom: 6px; line-height: 1.4; }
+.mkt-src { font-family: var(--f-mono); font-size: 9px; color: var(--on-light-3); letter-spacing: 0.08em; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--bd-light); margin-top: 48px; }
+.two-col > div { background: var(--paper); padding: clamp(28px,4vw,44px) clamp(22px,3vw,36px); }
+@media(max-width:700px) { .two-col { grid-template-columns: 1fr; } }
+.tc-lbl { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 14px; display: block; }
+.tc-title { font-family: var(--f-display); font-size: clamp(18px,2.5vw,22px); font-weight: 600; color: var(--on-light-1); margin-bottom: 20px; }
+.tc-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.tc-list li { display: flex; gap: 12px; font-size: 14px; color: var(--on-light-2); line-height: 1.5; align-items: flex-start; }
+.tc-bullet { flex-shrink: 0; font-family: var(--f-mono); font-weight: 700; margin-top: 1px; }
+
+/* ══════════════════════════════════════
+   INVESTMENT (soft)
+══════════════════════════════════════ */
+.inv-hd { text-align: center; max-width: 660px; margin: 0 auto clamp(52px,6vw,80px); }
+
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 16px; margin-bottom: 64px;
+}
+.tier {
+  border: 1px solid var(--bd-light);
+  background: var(--paper);
+  padding: clamp(32px,4vw,52px) clamp(24px,3.5vw,40px);
+  position: relative; overflow: hidden;
+  transition: all 0.3s;
+}
+.tier:hover { border-color: var(--violet); box-shadow: 0 8px 44px rgba(240, 29, 29, 0.1); transform: translateY(-4px); }
+.tier.featured { border-color: var(--violet); background: linear-gradient(160deg, var(--violet-bg) 0%, var(--paper) 55%); }
+.tier.featured::before { content: 'RECOMENDADO'; position: absolute; top: 18px; right: -34px; background: var(--violet); color: #fff; font-family: var(--f-mono); font-size: 8px; letter-spacing: 0.12em; padding: 5px 44px; transform: rotate(45deg); }
+.tier-lbl { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--on-light-3); text-transform: uppercase; margin-bottom: 12px; }
+.tier-amt { font-family: var(--f-display); font-weight: 700; font-size: clamp(40px,6vw,60px); letter-spacing: -0.02em; color: var(--violet); line-height: 1; margin-bottom: 4px; }
+.tier-cur { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--on-light-3); margin-bottom: 28px; display: block; }
+.tier-benefits { list-style: none; margin-bottom: 32px; }
+.tier-benefits li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--on-light-2); padding: 9px 0; border-bottom: 1px solid var(--bd-light); line-height: 1.45; }
+.tier-benefits li:last-child { border-bottom: none; }
+.tb-ico { flex-shrink: 0; margin-top: 2px; }
+.tier-btn {
+  width: 100%; background: transparent; border: 1px solid var(--violet);
+  color: var(--violet); font-family: var(--f-display); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.05em; padding: 14px; cursor: pointer; transition: all 0.25s; border-radius: 2px;
+}
+.tier-btn:hover, .tier.featured .tier-btn { background: var(--violet); color: #fff; box-shadow: 0 4px 20px rgba(240, 29, 29, 0.3); }
+
+/* ROI */
+.roi-box {
+  background: var(--paper-3); border: 1px solid var(--bd-lt2);
+  padding: clamp(36px,5vw,60px) clamp(24px,4vw,52px);
+  margin-bottom: 56px; text-align: center;
+}
+.roi-lbl-top { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.18em; color: var(--violet); text-transform: uppercase; margin-bottom: 40px; display: block; }
+.roi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 28px; }
+.roi-val { font-family: var(--f-display); font-weight: 700; font-size: clamp(32px,5vw,48px); letter-spacing: -0.02em; background: linear-gradient(135deg, var(--violet), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; }
+.roi-lbl { font-size: 13px; color: var(--on-light-3); line-height: 1.5; }
+
+/* Non monetary */
+.nonmon { background: var(--paper); border: 1px solid var(--bd-light); padding: clamp(28px,4vw,44px) clamp(22px,3.5vw,40px); margin-bottom: 40px; }
+.nm-lbl { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--cyan); text-transform: uppercase; margin-bottom: 24px; display: block; }
+/* cyan on white needs adjusted color */
+.nm-lbl { color: #007fa0; }
+.nm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 24px; }
+.nm-title { font-family: var(--f-display); font-size: 14px; font-weight: 600; color: var(--on-light-1); margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+.nm-desc { font-size: 13px; color: var(--on-light-3); line-height: 1.55; }
+
+/* ══════════════════════════════════════
+   PURPOSE (dark) — emotional peak
+══════════════════════════════════════ */
+.purpose {
+  background: var(--ink);
+  padding-block: var(--pad-v);
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.purpose::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 900px; height: 900px;
+  background: radial-gradient(circle, rgba(240, 29, 29, 0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.purpose-content { position: relative; max-width: 760px; margin-inline: auto; }
+.purpose-title { font-family: var(--f-display); font-weight: 700; font-size: clamp(32px,6vw,72px); letter-spacing: -0.02em; color: var(--on-dark-1); line-height: 1.05; margin-bottom: 28px; }
+.purpose-sub { font-size: clamp(16px,2vw,19px); font-weight: 400; line-height: 1.8; color: var(--on-dark-2); margin-bottom: 20px; }
+.pulse-line { display: flex; align-items: center; justify-content: center; gap: 16px; margin-block: 44px; }
+.pl-line { flex: 1; max-width: 260px; height: 1px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); animation: pulseLine 2s ease-in-out infinite; }
+.pl-icon { flex-shrink: 0; }
+@keyframes pulseLine { 0%,100%{opacity:.25;} 50%{opacity:.9;} }
+
+/* ══════════════════════════════════════
+   TEAM (light)
+══════════════════════════════════════ */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 52px; }
+.team-card { border: 1px solid var(--bd-light); padding: clamp(28px,4vw,40px) clamp(20px,3vw,30px); text-align: center; background: var(--paper); transition: all 0.25s; }
+.team-card:hover { border-color: var(--violet); box-shadow: 0 4px 28px rgba(240, 29, 29, 0.294); transform: translateY(-3px); }
+.t-avatar { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--violet); background: var(--violet-bg); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-family: var(--f-display); font-size: 20px; font-weight: 700; color: var(--violet); }
+.t-name { font-family: var(--f-display); font-size: 16px; font-weight: 600; color: var(--on-light-1); margin-bottom: 4px; }
+.t-role { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.12em; color: var(--violet); text-transform: uppercase; margin-bottom: 14px; }
+.skill-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.stag { font-family: var(--f-mono); font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-light-3); border: 1px solid var(--bd-light); padding: 4px 8px; }
+
+/* ══════════════════════════════════════
+   SOURCES (soft)
+══════════════════════════════════════ */
+.src-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; margin-top: 48px; }
+.src-card { background: var(--paper); border: 1px solid var(--bd-light); padding: 18px 22px; display: flex; gap: 14px; align-items: flex-start; transition: all 0.2s; text-decoration: none; }
+.src-card:hover { border-color: var(--violet); box-shadow: 0 2px 14px rgba(240, 29, 29, 0.08); }
+.src-num { font-family: var(--f-mono); font-size: 11px; font-weight: 700; color: var(--violet); width: 26px; flex-shrink: 0; padding-top: 1px; }
+.src-ttl { font-family: var(--f-body); font-size: 13px; font-weight: 600; color: var(--on-light-1); margin-bottom: 4px; line-height: 1.4; }
+.src-org { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.08em; color: var(--on-light-3); text-transform: uppercase; margin-bottom: 3px; display: block; }
+.src-url { font-family: var(--f-mono); font-size: 9px; color: #a00000; word-break: break-all; }
+
+/* ══════════════════════════════════════
+   FINAL CTA (dark)
+══════════════════════════════════════ */
+.final-cta {
+  background: var(--ink); text-align: center;
+  padding-block: calc(var(--pad-v) * 1.2);
+  position: relative; overflow: hidden;
+}
+.final-cta::before {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(240, 29, 29, 0.11) 0%, transparent 65%);
+  pointer-events: none;
+}
+.final-cta-content { position: relative; }
+.fct-title { font-family: var(--f-display); font-weight: 700; font-size: clamp(28px,5.5vw,68px); letter-spacing: -0.02em; color: var(--on-dark-1); line-height: 1.05; margin-bottom: 20px; }
+.fct-sub { font-size: clamp(15px,2vw,18px); font-weight: 400; color: var(--on-dark-2); max-width: 560px; margin: 0 auto 48px; line-height: 1.75; }
+.contact-box {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 14px;
+  border: 1px solid var(--bd-dk2);
+  padding: clamp(32px,4.5vw,52px) clamp(28px,5vw,72px);
+  background: rgba(34, 12, 12, 0.7);
+}
+.cb-lbl { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--on-dark-3); text-transform: uppercase; }
+.cb-email { font-family: var(--f-display); font-size: clamp(15px,2.5vw,22px); font-weight: 600; color: var(--cyan); letter-spacing: 0.02em; transition: color 0.2s; }
+.cb-email:hover { color: var(--violet-3); }
+.cb-org { font-size: 13px; color: var(--on-dark-3); }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer {
+  background: var(--ink);
+  border-top: 1px solid var(--bd-dark);
+  padding-block: 28px;
+  padding-inline: var(--gap);
+}
+.footer-inner {
+  max-width: var(--max); margin-inline: auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.foot-logo { font-family: var(--f-display); font-size: 14px; font-weight: 700; letter-spacing: 0.25em; color: var(--cyan); opacity: 0.45; }
+.foot-txt { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--on-dark-3); text-align: center; line-height: 1.6; }
+.foot-note { font-family: var(--f-mono); font-size: 9px; color: var(--ink-3); letter-spacing: 0.06em; }
+
+/* ══════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════ */
+.rv { opacity: 0; transform: translateY(32px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.rv.in { opacity: 1; transform: translateY(0); }
+
+/* Stagger siblings */
+.rv-stagger > * { opacity: 0; transform: translateY(24px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.rv-stagger.in > *:nth-child(1) { opacity:1; transform:none; transition-delay:0s; }
+.rv-stagger.in > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.08s; }
+.rv-stagger.in > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.16s; }
+.rv-stagger.in > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.24s; }
+.rv-stagger.in > *:nth-child(5) { opacity:1; transform:none; transition-delay:0.32s; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(28px);} to{opacity:1;transform:none;} }
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-inner">
+    ><div class="nav-logo">
+  <img src="areslogo.png" alt="Logo ARES" style="height: 35px; width: auto;">
+</div>
+    <ul class="nav-links">
+      <li><a href="#problema">Problema</a></li>
+      <li><a href="#solucion">Solución</a></li>
+      <li><a href="#favaloro">Favaloro</a></li>
+      <li><a href="#mercado">Mercado</a></li>
+      <li><a href="#inversion">Inversión</a></li>
+      <li><a href="#equipo">Equipo</a></li>
+      <li><a href="#fuentes">Fuentes</a></li>
+    </ul>
+    <a href="#inversion" class="nav-cta">Sumarme al proyecto</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero s-dark">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="hero-content wrap">
+
+    <!-- Opening hook — THE LINE -->
+    <p class="hero-hook">
+      Hoy podés ser parte de algo que, dentro de diez años,<br>
+      alguien recordará como <strong>la decisión que le salvó la vida a su papá.</strong>
+    </p>
+
+    <h1 class="hero-title">
+      <span class="ht-a">A</span><span class="ht-dot">.</span><span class="ht-r">R</span><span class="ht-dot">.</span><span class="ht-e">E</span><span class="ht-dot">.</span><span class="ht-s">S</span>
+    </h1>
+    <p class="hero-full">Arrhythmia Real-time Evaluation System</p>
+
+    <p class="hero-desc">
+      Un dispositivo portátil con inteligencia artificial que detecta arritmias cardíacas
+      antes de que ocurra el daño irreversible. En Argentina,
+      el corazón se cobra <em>una vida cada 15 minutos.</em>
+      ARES actúa antes de que empiece el conteo.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#problema" class="btn btn-fill">
+        Ver por qué importa
+        <svg class="btn-arrow" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="9" x2="15" y2="9"/><polyline points="9,3 15,9 9,15"/></svg>
+      </a>
+      <a href="#inversion" class="btn btn-ghost-dk">Quiero invertir</a>
+    </div>
+
+    <div class="hero-stats rv-stagger">
+      <div class="hstat">
+        <div class="hstat-num">18M</div>
+        <div class="hstat-lbl">Muertes / año OMS</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">40K</div>
+        <div class="hstat-lbl">Muerte súbita ARG</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">70%</div>
+        <div class="hstat-lbl">Fuera del hospital</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">$108</div>
+        <div class="hstat-lbl">Costo del prototipo</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ECG dark→light -->
+<div class="ecg-div s-dark">
+  <svg width="100%" height="64" viewBox="0 0 1440 64" preserveAspectRatio="none">
+    <path class="ecg-path-d" d="M0,32 L80,32 L95,32 L103,8 L112,56 L120,4 L128,60 L136,32 L160,32 L240,32 L255,32 L263,8 L272,56 L280,4 L288,60 L296,32 L320,32 L400,32 L415,32 L423,8 L432,56 L440,4 L448,60 L456,32 L480,32 L560,32 L575,32 L583,8 L592,56 L600,4 L608,60 L616,32 L640,32 L720,32 L735,32 L743,8 L752,56 L760,4 L768,60 L776,32 L800,32 L880,32 L895,32 L903,8 L912,56 L920,4 L928,60 L936,32 L960,32 L1040,32 L1055,32 L1063,8 L1072,56 L1080,4 L1088,60 L1096,32 L1120,32 L1200,32 L1215,32 L1223,8 L1232,56 L1240,4 L1248,60 L1256,32 L1280,32 L1360,32 L1375,32 L1383,8 L1392,56 L1400,4 L1408,60 L1416,32 L1440,32"/>
+  </svg>
+</div>
+
+<!-- ══ PROBLEMA ══ -->
+<section class="s-light section" id="problema">
+  <div class="wrap">
+
+    <div class="section-hd rv">
+      <div class="chip-light">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="5"/><line x1="6" y1="3" x2="6" y2="6"/><line x1="6" y1="8.5" x2="6" y2="9"/></svg>
+        El Problema
+      </div>
+      <h2 class="t-display">El corazón falla<br><span class="grad-v">en silencio.</span></h2>
+      <p class="t-body" style="color:var(--on-light-2); max-width:720px; margin-top:16px;">Las arritmias no avisan. En adultos mayores ocurren sin síntomas. En niños y adolescentes, la muerte súbita aparece en el primer y único episodio. Argentina tiene la tecnología para detenerlas — pero nadie la tiene puesta.</p>
+    </div>
+
+    <div class="stats-row rv-stagger">
+      <div class="stat-card sc-r">
+        <div class="stat-n sn-r">18M</div>
+        <div class="stat-label">Muertes cardiovasculares en el mundo por año</div>
+        <div class="stat-src">// OMS · 2024</div>
+      </div>
+      <div class="stat-card sc-v">
+        <div class="stat-n sn-v">110K</div>
+        <div class="stat-label">Fallecimientos cardíacos anuales solo en Argentina</div>
+        <div class="stat-src">// DEIS · Min. Salud · 2022</div>
+      </div>
+      <div class="stat-card sc-c">
+        <div class="stat-n sn-c">40K</div>
+        <div class="stat-label">Casos de muerte súbita estimados en Argentina por año</div>
+        <div class="stat-src">// Fund. Cardiológica Argentina · SAC</div>
+      </div>
+      <div class="stat-card sc-g">
+        <div class="stat-n sn-g">70%</div>
+        <div class="stat-label">De los eventos graves ocurren fuera del hospital</div>
+        <div class="stat-src">// Sociedad Argentina de Cardiología · 2024</div>
+      </div>
+    </div>
+
+    <div class="div-light rv"></div>
+
+    <div class="rv" style="margin-top:52px;">
+      <div class="chip-light" style="margin-bottom:20px;">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 1l1.2 3.6h3.8l-3 2.2 1.1 3.5L6 8.1l-3.1 2.2 1.1-3.5-3-2.2h3.8z"/></svg>
+        Poblaciones en riesgo crítico
+      </div>
+      <h3 class="t-display" style="font-size:clamp(24px,4vw,40px); margin-bottom:8px;">Quiénes pagan el precio más alto</h3>
+    </div>
+
+    <div class="groups-grid rv-stagger">
+
+      <div class="group-card">
+        <div class="gc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M15 7c1.5-.5 3 .5 3 2"/>
+          </svg>
+        </div>
+        <div class="gc-title">Adultos Mayores</div>
+        <div class="gc-desc">Los decesos por insuficiencia cardíaca crecen exponencialmente desde los 60 años. El 80% de los eventos cardíacos graves los afectan directamente.</div>
+      </div>
+
+      <div class="group-card">
+        <div class="gc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            <polyline points="16,11 18,13 22,9"/>
+          </svg>
+        </div>
+        <div class="gc-title">Niños y Jóvenes</div>
+        <div class="gc-desc">La miocardiopatía hipertrófica causa el 80% de las muertes súbitas en menores de 35. La mayoría sin diagnóstico previo. Ningún síntoma antes del colapso.</div>
+      </div>
+
+      <div class="group-card">
+        <div class="gc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <div class="gc-title">Deportistas</div>
+        <div class="gc-desc">El 31% de los casos ocurren durante o después del esfuerzo físico. El corazón en carga máxima es el más vulnerable a una arritmia letal.</div>
+      </div>
+
+      <div class="group-card">
+        <div class="gc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a5 5 0 0 1 5 5c0 5-5 11-5 11S7 12 7 7a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="2"/>
+          </svg>
+        </div>
+        <div class="gc-title">Trabajadores de Riesgo</div>
+        <div class="gc-desc">Bomberos, mineros, rescatistas y conductores de larga distancia enfrentan estrés físico y ambiental extremo sin monitoreo cardíaco continuo.</div>
+      </div>
+
+      <div class="group-card">
+        <div class="gc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <div class="gc-title">Post-Tratamiento</div>
+        <div class="gc-desc">El alta hospitalaria no termina el riesgo. Los pacientes post-cirugía cardíaca quedan sin monitoreo en el período de máxima vulnerabilidad.</div>
+      </div>
+
+    </div>
+
+    <div class="alert-box rv">
+      <p style="font-family:var(--f-mono); font-size:9px; letter-spacing:0.15em; color:var(--red); text-transform:uppercase; margin-bottom:12px;">
+        &#9632; El dato más duro
+      </p>
+      <p>Con cada minuto sin asistencia, la probabilidad de supervivencia cae un <strong style="color:var(--red)">10%</strong>. A los <strong style="color:var(--red)">10 minutos</strong>, el daño cerebral es irreversible. La asistencia en el <strong style="color:var(--on-light-1)">primer minuto</strong> salva entre el 70% y 80% de los pacientes.<br><em style="font-style:normal; color:var(--on-light-1); font-weight:600;">ARES actúa antes de que empiece el conteo.</em></p>
+    </div>
+
+    <!-- Section CTA -->
+    <div class="section-cta rv">
+      <p class="hook-line">¿Cuántas vidas podría salvar en el primer año?</p>
+      <p class="hook-sub">Esa es la pregunta que mueve a este equipo cada día.<br>Y la respuesta depende también de quiénes eligen sumarse.</p>
+      <a href="#inversion" class="btn btn-ghost-lt">
+        Quiero ser parte
+        <svg class="btn-arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="9" x2="15" y2="9"/><polyline points="9,3 15,9 9,15"/></svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ECG light→dark -->
+<div class="ecg-div s-soft">
+  <svg width="100%" height="64" viewBox="0 0 1440 64" preserveAspectRatio="none">
+    <path class="ecg-path-l" d="M0,32 L80,32 L95,32 L103,8 L112,56 L120,4 L128,60 L136,32 L160,32 L240,32 L255,32 L263,8 L272,56 L280,4 L288,60 L296,32 L320,32 L400,32 L415,32 L423,8 L432,56 L440,4 L448,60 L456,32 L480,32 L560,32 L575,32 L583,8 L592,56 L600,4 L608,60 L616,32 L640,32 L720,32 L735,32 L743,8 L752,56 L760,4 L768,60 L776,32 L800,32 L880,32 L895,32 L903,8 L912,56 L920,4 L928,60 L936,32 L960,32 L1040,32 L1055,32 L1063,8 L1072,56 L1080,4 L1088,60 L1096,32 L1120,32 L1200,32 L1215,32 L1223,8 L1232,56 L1240,4 L1248,60 L1256,32 L1280,32 L1360,32 L1375,32 L1383,8 L1392,56 L1400,4 L1408,60 L1416,32 L1440,32"/>
+  </svg>
+</div>
+
+<!-- ══ SOLUCIÓN ══ -->
+<section class="s-dark2 section" id="solucion">
+  <div class="wrap">
+
+    <div class="section-hd rv">
+      <div class="chip-dark">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="1" y="3" width="10" height="7" rx="1"/><path d="M4 3V2a2 2 0 0 1 4 0v1"/><line x1="6" y1="6" x2="6" y2="8"/></svg>
+        La Solución
+      </div>
+      <h2 class="t-display">Tecnología que<br><span class="grad-c">late contigo.</span></h2>
+    </div>
+
+    <div class="sol-grid">
+      <div>
+        <p class="t-body rv">ARES es un dispositivo portátil sin implantes que monitorea la actividad eléctrica del corazón mediante electrodos sobre el pecho y un sensor ECG de alta precisión (AD8232).</p>
+        <p class="t-body rv">Una red neuronal liviana (TinyML) corre directamente en el chip, sin depender de internet, diferenciando arritmias reales de falsas alarmas por movimiento del paciente.</p>
+        <p class="t-body rv">Ante una detección, alerta al usuario y a sus contactos vía Bluetooth, compartiendo ubicación GPS en tiempo real desde la app móvil.</p>
+
+        <ul class="feat-list">
+          <li class="feat-item rv">
+            <div class="feat-ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div>
+              <div class="feat-title">Monitoreo Continuo 24/7</div>
+              <div class="feat-desc">2 electrodos posicionados en el torso. Señal analógica capturada y digitalizada en tiempo real, sin interrupciones.</div>
+            </div>
+          </li>
+          <li class="feat-item rv">
+            <div class="feat-ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="3" stroke-dasharray="2 2"/></svg>
+            </div>
+            <div>
+              <div class="feat-title">IA a bordo — TinyML</div>
+              <div class="feat-desc">Red neuronal optimizada para el ESP32. Sin nube, sin latencia, sin dependencia de conectividad. La inteligencia vive en el dispositivo.</div>
+            </div>
+          </li>
+          <li class="feat-item rv">
+            <div class="feat-ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18" stroke-width="2.5"/></svg>
+            </div>
+            <div>
+              <div class="feat-title">App Móvil Flutter</div>
+              <div class="feat-desc">Historial cardíaco, alertas de emergencia y ubicación GPS compartida automáticamente al contacto designado.</div>
+            </div>
+          </li>
+          <li class="feat-item rv">
+            <div class="feat-ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div>
+              <div class="feat-title">USD 108 — Costo total del prototipo</div>
+              <div class="feat-desc">Una fracción de cualquier monitor Holter profesional. Diseñado para democratizar la cardioprotección en toda LATAM.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="rv">
+        <div class="diag">
+          <div class="diag-title">// Flujo del sistema ARES</div>
+          <div class="flow-step"><span class="flow-n">01</span><span class="flow-l">Electrodos ECG captan señal eléctrica cardíaca</span></div>
+          <div class="flow-arr">↓</div>
+          <div class="flow-step"><span class="flow-n">02</span><span class="flow-l">Sensor AD8232 amplifica y filtra la señal analógica</span></div>
+          <div class="flow-arr">↓</div>
+          <div class="flow-step"><span class="flow-n">03</span><span class="flow-l">Microcontrolador ESP32 digitaliza y procesa</span></div>
+          <div class="flow-arr">↓</div>
+          <div class="flow-step"><span class="flow-n">04</span><span class="flow-l">Modelo de IA detecta patrones de arritmia</span></div>
+          <div class="flow-arr">↓</div>
+          <div class="flow-step"><span class="flow-n">05</span><span class="flow-l">Alerta Bluetooth + GPS → App → Contacto de emergencia</span></div>
+          <div class="comp-grid">
+            <div class="comp-tag">AD8232 · ECG</div><div class="comp-tag">ESP32 · MCU</div>
+            <div class="comp-tag">GPS NEO-6M</div><div class="comp-tag">Flutter · App</div>
+            <div class="comp-tag">TinyML · IA</div><div class="comp-tag">18650 · Battery</div>
+          </div>
+        </div>
+
+        <!-- Inline CTA dark -->
+        <div style="margin-top:24px; border:1px solid var(--bd-dark); padding:24px 28px; background:rgba(91,29,240,0.06);" class="rv">
+          <p style="font-family:var(--f-display); font-size:15px; font-weight:600; color:var(--on-dark-1); margin-bottom:8px;">Imaginate este dispositivo en el torso de tu abuelo.</p>
+          <p style="font-size:13px; color:var(--on-dark-2); line-height:1.65; margin-bottom:16px;">ARES no es solo un proyecto técnico. Es la diferencia entre una llamada a tiempo y una noticia que nadie quiere recibir.</p>
+          <a href="#inversion" class="btn btn-fill" style="font-size:13px; padding:12px 28px;">Ser parte de esto</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="div-dark s-dark2"></div>
+
+<!-- ══ FAVALORO ══ -->
+<section class="s-dark section" id="favaloro">
+  <div class="wrap">
+
+    <div class="section-hd rv">
+      <div class="chip-dark">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 10.5s-4-3-4-6a4 4 0 0 1 8 0c0 3-4 6-4 6z"/></svg>
+        Alianza Institucional
+      </div>
+      <h2 class="t-display">El legado de Favaloro<br><span class="grad-c">como propósito.</span></h2>
+      <p class="t-body" style="color:var(--on-dark-2); max-width:700px; margin-top:16px;">La Fundación Favaloro es la institución de referencia en investigación cardiovascular de Argentina y LATAM. Su Servicio de Electrocardiología documentó que el 50% de las muertes cardiovasculares son súbitas — el dato central que justifica ARES.</p>
+    </div>
+
+    <div class="fav-wrap rv">
+      <div class="fav-inner">
+        <div class="fav-badge">
+          <div class="fav-emblem">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <div class="fav-name">Fundación<br>Favaloro</div>
+          <div class="fav-sub">Buenos Aires · Argentina</div>
+          <a href="https://www.fundacionfavaloro.org" target="_blank" rel="noopener" class="fav-link">fundacionfavaloro.org →</a>
+        </div>
+        <div class="fav-body">
+          <h3>Por qué Favaloro<br>y por qué ahora</h3>
+          <p>El Dr. René Favaloro inventó el bypass coronario. Pero más que eso, dejó una filosofía: la medicina de excelencia debe alcanzar a todos, sin importar el código postal ni el saldo bancario.</p>
+          <p>Queremos que la Fundación Favaloro valide nuestro modelo de IA, colabore en el dataset de entrenamiento y sea la primera institución en implementar ARES en sus programas de prevención comunitaria.</p>
+          <div class="fav-prop">
+            <span class="fav-prop-lbl">
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="1,6 4,9 11,3"/></svg>
+              Propuesta formal de alianza
+            </span>
+            <p>ARES se compromete a que <strong>todos los pacientes y programas de la Fundación Favaloro reciban el dispositivo de forma completamente gratuita y permanente</strong>, en el marco de un convenio de colaboración científica. La misión de Favaloro y la de ARES son idénticas: <strong>que el corazón de los argentinos tenga protección antes de necesitar un hospital.</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="div-dark s-dark"></div>
+
+<!-- ══ MERCADO ══ -->
+<section class="s-light section" id="mercado">
+  <div class="wrap">
+
+    <div class="section-hd rv">
+      <div class="chip-light">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="1,9 4,5 7,7 11,3"/><polyline points="8,3 11,3 11,6"/></svg>
+        Oportunidad de Mercado
+      </div>
+      <h2 class="t-display">Un mercado que<br><span class="grad-v">no para de crecer.</span></h2>
+      <p class="t-body" style="color:var(--on-light-2); max-width:700px; margin-top:16px;">El monitoreo cardíaco wearable con IA es el segmento de mayor crecimiento en MedTech global. ARES está en el punto exacto de entrada: prototipo hoy, certificación mañana, estándar regional en 5 años.</p>
+    </div>
+
+    <div class="mkt-row rv-stagger">
+      <div class="mkt-card">
+        <div class="mkt-val">$4.8B</div>
+        <div class="mkt-label">Mercado global ECG wearable 2025</div>
+        <div class="mkt-src">Research & Markets · 2025</div>
+      </div>
+      <div class="mkt-card">
+        <div class="mkt-val">$13.6B</div>
+        <div class="mkt-label">Proyección para 2030</div>
+        <div class="mkt-src">Globe Newswire · Abril 2026</div>
+      </div>
+      <div class="mkt-card">
+        <div class="mkt-val">23.8%</div>
+        <div class="mkt-label">CAGR anual — el más alto en MedTech</div>
+        <div class="mkt-src">Research & Markets · 2025</div>
+      </div>
+      <div class="mkt-card">
+        <div class="mkt-val">$220M</div>
+        <div class="mkt-label">Mercado LATAM ya en 2025</div>
+        <div class="mkt-src">Fortune Business Insights · 2025</div>
+      </div>
+    </div>
+
+    <div class="two-col rv">
+      <div>
+        <span class="tc-lbl" style="color:var(--violet);">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline;margin-right:6px;"><polyline points="1,6 4,9 11,3"/></svg>
+          Ventaja competitiva
+        </span>
+        <div class="tc-title">¿Por qué ARES gana?</div>
+        <ul class="tc-list">
+          <li><span class="tc-bullet" style="color:var(--green);">+</span> IA embebida — sin dependencia de nube ni internet</li>
+          <li><span class="tc-bullet" style="color:var(--green);">+</span> Costo 10x menor que un monitor Holter convencional</li>
+          <li><span class="tc-bullet" style="color:var(--green);">+</span> Sin implantes, sin hospitalización, sin fricción</li>
+          <li><span class="tc-bullet" style="color:var(--green);">+</span> Desarrollado para el contexto LATAM, no importado</li>
+          <li><span class="tc-bullet" style="color:var(--green);">+</span> Stack abierto y escalable hacia certificación ANMAT</li>
+        </ul>
+      </div>
+      <div>
+        <span class="tc-lbl" style="color:#007fa0;">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline;margin-right:6px;"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+          Roadmap
+        </span>
+        <div class="tc-title">Del prototipo al producto</div>
+        <ul class="tc-list">
+          <li><span class="tc-bullet" style="color:var(--violet); font-weight:700; font-family:var(--f-mono);">01</span> Prototipo funcional + pruebas clínicas básicas — 2025</li>
+          <li><span class="tc-bullet" style="color:var(--violet); font-weight:700; font-family:var(--f-mono);">02</span> PCB definitivo + App v1.0 + validación médica — 2026</li>
+          <li><span class="tc-bullet" style="color:var(--violet); font-weight:700; font-family:var(--f-mono);">03</span> Certificación ANMAT + primeras unidades — 2026/27</li>
+          <li><span class="tc-bullet" style="color:var(--violet); font-weight:700; font-family:var(--f-mono);">04</span> Expansión LATAM: Brasil, Chile, Colombia — 2027+</li>
+          <li><span class="tc-bullet" style="color:var(--violet); font-weight:700; font-family:var(--f-mono);">05</span> SaaS cardíaco para aseguradoras y obras sociales</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="div-light s-light"></div>
+
+<!-- ══ INVERSIÓN ══ -->
+<section class="s-soft section" id="inversion">
+  <div class="wrap">
+
+    <div class="inv-hd rv">
+      <div class="chip-light" style="margin-bottom:20px;">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="6" cy="6" r="5"/><path d="M4 6l1.5 1.5L8 4"/></svg>
+        Modelo de Inversión
+      </div>
+      <h2 class="t-display">Tu capital.<br><span class="grad-v">Vidas que continúan.</span></h2>
+      <p class="t-body" style="color:var(--on-light-2); margin-top:16px;">Invertir en ARES no es solo un retorno financiero. Es poner tu nombre en un proyecto que en diez años la gente va a reconocer como el momento en que la cardioprotección se democratizó en Argentina.</p>
+    </div>
+
+    <div class="tiers rv-stagger">
+
+      <div class="tier">
+        <div class="tier-lbl">// Nivel 01</div>
+        <div class="tier-amt">$100</div>
+        <span class="tier-cur">USD · SPONSOR SEED</span>
+        <ul class="tier-benefits">
+          <li>
+            <span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span>
+            Logo en el prototipo final del dispositivo
+          </li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Mención en presentación oficial del proyecto</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Acceso anticipado a la demo funcional</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Certificado de apoyo a innovación educativa</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Seguimiento mensual del desarrollo</li>
+        </ul>
+        <button class="tier-btn">Contactar al equipo</button>
+      </div>
+
+      <div class="tier featured">
+        <div class="tier-lbl">// Nivel 02</div>
+        <div class="tier-amt">$350</div>
+        <span class="tier-cur">USD · INVERSOR ÁNGEL</span>
+        <ul class="tier-benefits">
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Todo lo del nivel anterior</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> 3% de participación en el proyecto</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Presencia en pitches ante inversores</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Derecho de opción en próxima ronda</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Co-autoría en documentación técnica</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> 1 unidad comercial gratuita al lanzamiento</li>
+        </ul>
+        <button class="tier-btn">Invertir ahora</button>
+      </div>
+
+      <div class="tier">
+        <div class="tier-lbl">// Nivel 03</div>
+        <div class="tier-amt">$1K+</div>
+        <span class="tier-cur">USD · SOCIO ESTRATÉGICO</span>
+        <ul class="tier-benefits">
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Todo lo anterior</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> 10–15% de equity negociable</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Seat en board de decisiones técnicas</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Naming rights en versión comercial</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Distribución exclusiva en región acordada</li>
+          <li><span class="tb-ico"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round"><polyline points="2,7 5,10 12,4"/></svg></span> Acceso a datos cardíacos agregados y anonimizados</li>
+        </ul>
+        <button class="tier-btn">Negociar acuerdo</button>
+      </div>
+
+    </div>
+
+    <div class="roi-box rv">
+      <span class="roi-lbl-top">// Los números del retorno</span>
+      <div class="roi-row">
+        <div><div class="roi-val">$108</div><div class="roi-lbl">Costo actual del prototipo por unidad</div></div>
+        <div><div class="roi-val">~$300</div><div class="roi-lbl">Precio de venta estimado al mercado</div></div>
+        <div><div class="roi-val">23.8%</div><div class="roi-lbl">CAGR del mercado a 2030</div></div>
+        <div><div class="roi-val">40M+</div><div class="roi-lbl">Adultos mayores en LATAM en riesgo</div></div>
+      </div>
+    </div>
+
+    <div class="nonmon rv">
+      <span class="nm-lbl">
+        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:inline; margin-right:6px;"><circle cx="6" cy="6" r="5"/><line x1="6" y1="4" x2="6" y2="8"/><line x1="4" y1="6" x2="8" y2="6"/></svg>
+        También podés aportar sin inversión monetaria
+      </span>
+      <div class="nm-grid">
+        <div>
+          <div class="nm-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+            Know-how médico
+          </div>
+          <div class="nm-desc">Cardiólogos o investigadores que puedan validar el modelo de IA con datos reales de pacientes.</div>
+        </div>
+        <div>
+          <div class="nm-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            GPU / Cómputo
+          </div>
+          <div class="nm-desc">Recursos para entrenar la red neuronal con mayor precisión y rapidez en entornos locales.</div>
+        </div>
+        <div>
+          <div class="nm-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Bases de datos ECG
+          </div>
+          <div class="nm-desc">Datasets clínicos de señales cardíacas para mejorar la tasa de acierto del modelo de detección.</div>
+        </div>
+        <div>
+          <div class="nm-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22,8.5 12,15.5 2,8.5"/></svg>
+            Impresión 3D de precisión
+          </div>
+          <div class="nm-desc">Acceso a impresoras de alta resolución para fabricar el casing ergonómico del dispositivo.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ PURPOSE ══ -->
+<section class="purpose s-dark" id="proposito">
+  <div class="wrap">
+    <div class="purpose-content rv">
+      <div class="chip-dark" style="margin-bottom:24px; justify-content:center;">
+        <div class="dot-live"></div>
+        Por qué importa
+      </div>
+      <h2 class="purpose-title">
+        Hoy podés ser parte de<br>
+        algo que <span class="grad-c">salva vidas.</span>
+      </h2>
+      <div class="pulse-line">
+        <div class="pl-line"></div>
+        <div class="pl-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <div class="pl-line"></div>
+      </div>
+      <p class="purpose-sub">Un abuelo jugando con sus nietos. Un chico de 16 años en entrenamiento. Un bombero en turno de guardia. Ninguno sabe cuándo su corazón va a necesitar ayuda urgente.</p>
+      <p class="purpose-sub">Este proyecto nació en las aulas de la Escuela Técnica N°7 de Quilmes. Cuatro estudiantes de aviónica que decidieron que la tecnología que salva vidas no debería ser privilegio de quienes pueden pagarla.</p>
+      <p style="font-family:var(--f-display); font-size:clamp(18px,3vw,26px); font-weight:600; color:var(--on-dark-1); margin-bottom:36px; line-height:1.4;">Las inversiones más importantes de la historia<br>no fueron solo financieras. Fueron de <span class="col-c">propósito.</span></p>
+      <a href="#inversion" class="btn btn-cta-big">
+        Sumarme a ARES
+        <svg class="btn-arrow" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="9" x2="15" y2="9"/><polyline points="9,3 15,9 9,15"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EQUIPO ══ -->
+<section class="s-light section" id="equipo">
+  <div class="wrap">
+
+    <div class="section-hd rv">
+      <div class="chip-light">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="4" cy="4" r="2.5"/><circle cx="9" cy="4" r="2.5"/><path d="M1 11c0-2 1.3-3 3-3s3 1 3 1 1-1 3-1 3 1 3 3"/></svg>
+        El Equipo
+      </div>
+      <h2 class="t-display">Cuatro mentes.<br><span class="grad-v">Un propósito.</span></h2>
+    </div>
+
+    <div class="team-grid rv-stagger">
+      <div class="team-card">
+        <div class="t-avatar">DB</div>
+        <div class="t-name">Dante Balbastro</div>
+        <div class="t-role">Software · Marketing · IA</div>
+        <div class="skill-tags"><span class="stag">Software Dev</span><span class="stag">Redes Sociales</span><span class="stag">Prototipado</span></div>
+      </div>
+      <div class="team-card">
+        <div class="t-avatar">DC</div>
+        <div class="t-name">David Celso</div>
+        <div class="t-role">PCB · App Móvil</div>
+        <div class="skill-tags"><span class="stag">KiCad PCB</span><span class="stag">Flutter</span><span class="stag">Marketing</span></div>
+      </div>
+      <div class="team-card">
+        <div class="t-avatar">GD</div>
+        <div class="t-name">Germán D'Abundo</div>
+        <div class="t-role">IA · Prototipo 3D</div>
+        <div class="skill-tags"><span class="stag">Python / ML</span><span class="stag">Fusion 360</span><span class="stag">App Dev</span></div>
+      </div>
+      <div class="team-card">
+        <div class="t-avatar">TL</div>
+        <div class="t-name">Tomás Leones</div>
+        <div class="t-role">Firmware · IA · PCB</div>
+        <div class="skill-tags"><span class="stag">PlatformIO</span><span class="stag">TinyML</span><span class="stag">Electrónica</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:44px; text-align:center; border:1px solid var(--bd-light); padding:clamp(24px,4vw,40px); background:var(--paper);" class="rv">
+      <p style="font-family:var(--f-mono); font-size:9px; letter-spacing:0.15em; color:var(--on-light-3); margin-bottom:12px; text-transform:uppercase;">// Institución</p>
+      <p style="font-family:var(--f-display); font-size:clamp(18px,3vw,24px); font-weight:700; color:var(--violet);">Escuela de Educación Técnica N°7</p>
+      <p style="font-size:15px; color:var(--on-light-3); margin-top:6px;">Taller Regional Quilmes · Especialidad Aviónica</p>
+      <p style="font-family:var(--f-mono); font-size:9px; color:var(--paper-3); margin-top:6px; letter-spacing:0.08em; color:#696a6e;">Prácticas Profesionalizantes · 2026</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ FUENTES ══ -->
+<section class="s-soft section-sm" id="fuentes">
+  <div class="wrap">
+
+    <div class="section-hd rv">
+      <div class="chip-light">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="1" width="8" height="10" rx="1"/><line x1="4" y1="4" x2="8" y2="4"/><line x1="4" y1="6.5" x2="8" y2="6.5"/><line x1="4" y1="9" x2="6" y2="9"/></svg>
+        Referencias y Fuentes
+      </div>
+      <h2 class="t-display" style="font-size:clamp(26px,4vw,44px);">La evidencia<br><span class="grad-v">detrás de ARES.</span></h2>
+      <p class="t-body" style="color:var(--on-light-3); max-width:620px; margin-top:12px;">Cada estadística de este sitio proviene de instituciones médicas verificadas. Acceso directo a las fuentes completas.</p>
+    </div>
+
+    <div class="src-grid">
+      <a class="src-card rv" href="https://www.fundacionfavaloro.org/salud-alertan-sobre-la-afeccion-que-genera-mas-muertes-por-enfermedad-cardiovascular/" target="_blank" rel="noopener"><span class="src-num">01</span><div><div class="src-ttl">Insuficiencia cardíaca: principal causa de muerte cardiovascular en Argentina</div><span class="src-org">Fundación Favaloro · 2022</span><div class="src-url">fundacionfavaloro.org</div></div></a>
+      <a class="src-card rv" href="https://fac.org.ar/scvc/llave/arritmia/pesce/pescee.htm" target="_blank" rel="noopener"><span class="src-num">02</span><div><div class="src-ttl">Muerte Súbita — Servicio de Electrocardiología, Fundación Favaloro</div><span class="src-org">FAC · Dr. Pesce R. · Fundación Favaloro</span><div class="src-url">fac.org.ar</div></div></a>
+      <a class="src-card rv" href="https://www.argentina.gob.ar/noticias/salud-presento-avances-en-el-abordaje-de-enfermedades-cardiovasculares" target="_blank" rel="noopener"><span class="src-num">03</span><div><div class="src-ttl">Estadísticas Vitales · Enfermedades Cardiovasculares Argentina 2020</div><span class="src-org">DEIS · Ministerio de Salud · 2022</span><div class="src-url">argentina.gob.ar</div></div></a>
+      <a class="src-card rv" href="https://www.ospedyc.org/40-000-casos-anuales-de-muerte-subita-en-argentina/" target="_blank" rel="noopener"><span class="src-num">04</span><div><div class="src-ttl">40.000 casos anuales de muerte súbita en Argentina</div><span class="src-org">OSPEDYC · Fundación Cardiológica Argentina</span><div class="src-url">ospedyc.org</div></div></a>
+      <a class="src-card rv" href="https://www.infobae.com/salud/2024/08/23/muerte-subita-en-argentina-la-mitad-ocurre-por-enfermedades-cardiovasculares/" target="_blank" rel="noopener"><span class="src-num">05</span><div><div class="src-ttl">La mitad de las muertes cardiovasculares en Argentina son súbitas</div><span class="src-org">Infobae · Dr. Mario Fitz Maurice (SAC) · Agosto 2024</span><div class="src-url">infobae.com</div></div></a>
+      <a class="src-card rv" href="https://www.lanacion.com.ar/sociedad/advierten-que-8-de-cada-10-personas-que-mueren-subitamente-tienen-problemas-coronarios-que-podrian-nid27082023/" target="_blank" rel="noopener"><span class="src-num">06</span><div><div class="src-ttl">8 de cada 10 víctimas de muerte súbita tienen enfermedad coronaria tratable</div><span class="src-org">La Nación · Dr. Fernando Scazzuso · Agosto 2023</span><div class="src-url">lanacion.com.ar</div></div></a>
+      <a class="src-card rv" href="https://grupoclarin-la-voz-prod.cdn.arcpublishing.com/salud/semana-de-la-lucha-contra-la-muerte-subita-profesionales-insisten-en-la-importancia-de-saber-rcp" target="_blank" rel="noopener"><span class="src-num">07</span><div><div class="src-ttl">Una muerte súbita cada 15 minutos en Argentina — Semana de concientización</div><span class="src-org">Clarín / La Voz · SAC · 2024</span><div class="src-url">arcpublishing.com</div></div></a>
+      <a class="src-card rv" href="https://www.mdzol.com/sociedad/fundacion-favaloro-advierten-que-las-enfermedades-cardiovasculares-siguen-siendo-la-principal-causa-muerte-n1469166" target="_blank" rel="noopener"><span class="src-num">08</span><div><div class="src-ttl">Enfermedades cardiovasculares: causa #1 de muerte en Argentina</div><span class="src-org">MDZ · Dra. Laura Favaloro · Marzo 2026</span><div class="src-url">mdzol.com</div></div></a>
+      <a class="src-card rv" href="https://www.researchandmarkets.com/report/wearable-ecg-monitors" target="_blank" rel="noopener"><span class="src-num">09</span><div><div class="src-ttl">Wearable ECG Monitors Market — $4.82B 2025 → $11.31B 2029 · CAGR 23.8%</div><span class="src-org">Research & Markets · 2025</span><div class="src-url">researchandmarkets.com</div></div></a>
+      <a class="src-card rv" href="https://www.globenewswire.com/news-release/2026/04/13/3272639/28124/en/Wearable-ECG-Monitors-Industry-to-More-Than-Double-During-2026-2030-Exceeding-13-6-Billion-Total-Revenue-Rising-Demand-for-AI-Driven-Diagnostics-and-Home-Based-Cardiac-Monitoring.html" target="_blank" rel="noopener"><span class="src-num">10</span><div><div class="src-ttl">ECG Wearable Market superará $13.6B en 2030 — AI-Driven Diagnostics</div><span class="src-org">Globe Newswire · Abril 2026</span><div class="src-url">globenewswire.com</div></div></a>
+      <a class="src-card rv" href="https://www.fortunebusinessinsights.com/mobile-ecg-devices-market-109626" target="_blank" rel="noopener"><span class="src-num">11</span><div><div class="src-ttl">Mercado LATAM de dispositivos ECG móviles — USD 220M en 2025</div><span class="src-org">Fortune Business Insights · 2025</span><div class="src-url">fortunebusinessinsights.com</div></div></a>
+      <a class="src-card rv" href="https://www.revespcardiol.org/es-mortalidad-por-enfermedades-del-miocardio-articulo-13086081" target="_blank" rel="noopener"><span class="src-num">12</span><div><div class="src-ttl">Mortalidad por enfermedades del miocardio en niños — Muerte súbita</div><span class="src-org">Revista Española de Cardiología</span><div class="src-url">revespcardiol.org</div></div></a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ FINAL CTA ══ -->
+<section class="final-cta s-dark" id="contacto">
+  <div class="wrap">
+    <div class="final-cta-content rv">
+      <div class="chip-dark" style="margin:0 auto 28px; justify-content:center;">
+        <div class="dot-live"></div>
+        El momento de sumar es ahora
+      </div>
+      <h2 class="fct-title">
+        Ser parte de un proyecto<br>
+        que salva vidas no tiene precio.<br>
+        <span class="grad-c">Pero sí tiene un botón.</span>
+      </h2>
+      <p class="fct-sub">Detrás de cada decisión de invertir hay una oportunidad de dejar una huella que dure décadas. Esta es la tuya.</p>
+      <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:52px;">
+       <a href="https://taplink.cc/proyectoares" target="_blank" class="btn btn-cta-big">
+          Contactar al equipo
+
+          <svg class="btn-arrow" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="9" x2="15" y2="9"/><polyline points="9,3 15,9 9,15"/></svg>
+        </a>
+        <a href="#inversion" class="btn btn-ghost-dk">Ver opciones de inversión</a>
+      </div>
+      <div class="contact-box" style="margin:0 auto; display:inline-flex;">
+        <span class="cb-lbl">// Contacto directo</span>
+        <a href="mailto:proyectoares26@gmail.com" class="cb-email">proyectoares26@gmail.com</a>
+        <span class="cb-org">Escuela Técnica N°7 · Quilmes · Buenos Aires · Argentina</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="foot-logo">A·R·E·S</div>
+    <div class="foot-txt">ARRHYTHMIA REAL-TIME EVALUATION SYSTEM<br>Escuela Técnica N°7 · Quilmes · 2026</div>
+    <div class="foot-note">Anteproyecto académico · Prácticas Profesionalizantes</div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal — IntersectionObserver
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.07, rootMargin: '0px 0px -48px 0px' });
+
+document.querySelectorAll('.rv, .rv-stagger').forEach(el => observer.observe(el));
+
+// Smooth scroll for anchors
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>
