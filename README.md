@@ -1,1 +1,130 @@
-# ARES
+<div align="center">
+
+  <img src="docs/assets/banner.png" alt="ARES Banner" width="100%"/>
+
+  <br/>
+  <br/>
+
+  <p align="center">
+
+    <a href="https://github.com/impatrq/ARES"><img src="https://img.shields.io/static/v1?label=impatrq&message=ARES&color=b83939&logo=github&logoColor=white"/></a>
+    <a href="https://github.com/impatrq/ARES"><img src="https://img.shields.io/github/stars/impatrq/ARES?style=social"/></a>
+    <img src="https://img.shields.io/badge/Hardware-ESP32%20%2B%20AD8232-b83939"/>
+    <img src="https://img.shields.io/badge/Status-Prototipo-b83939"/>
+  </p>
+
+  <p align="center">
+
+    <a href="https://instagram.com/ares.proyecto/"><img src="https://img.shields.io/badge/Instagram-b83939?logo=instagram&logoColor=white"/></a>
+    <a href="https://tu-sitio-web.com/"><img src="https://img.shields.io/badge/Website-b83939?logo=googlechrome&logoColor=white"/></a>
+  </p>
+
+</div>
+
+## 📖 Documentación del Proyecto
+
+El diseño del hardware, diagramas esquemáticos y la API de transmisión de datos están documentados en la carpeta `/docs`. Para replicar la placa o entender el flujo de señales del ECG, revisa la documentación técnica completa.
+  
+<div>&nbsp;</div>
+
+<h2>🛠 Estado de los Componentes y Fiabilidad</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Componente</th>
+      <th>Estado</th>
+      <th>Fiabilidad</th>
+      <th>Notas</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Firmware ESP32</strong></td>
+      <td>Estable</td>
+      <td>Alta</td>
+      <td>Transmisión de datos sin pérdida de paquetes bajo conexión Wi-Fi estable. Falta optimizar el modo Deep Sleep.</td>
+    </tr>
+    <tr>
+      <td><strong>Filtro Analógico (AD8232)</strong></td>
+      <td>En pruebas</td>
+      <td>Media</td>
+      <td>El acondicionamiento de la señal es correcto, pero se requiere ajustar los filtros pasivos para reducir el ruido por movimiento del usuario.</td>
+    </tr>
+    <tr>
+      <td><strong>Electrodos en Peto</strong></td>
+      <td>Prototipo</td>
+      <td>Baja</td>
+      <td>Los electrodos textiles integrados en la prenda negra necesitan mejor conductividad con la piel seca.</td>
+    </tr>
+    <tr>
+      <td><strong>Dashboard Web (Vercel)</strong></td>
+      <td>Estable</td>
+      <td>Alta</td>
+      <td>Renderizado de gráficas a 60fps funcional. Latencia inferior a 50ms.</td>
+    </tr>
+  </tbody>
+</table>
+
+> [!WARNING]
+> - **Descargo de Responsabilidad Médica:** ARES es un proyecto de investigación y desarrollo. Actualmente **no es un dispositivo médico certificado**. No debe utilizarse para diagnósticos clínicos, soporte vital o toma de decisiones médicas sin la supervisión de un profesional de la salud.
+> - **Sensibilidad al Ruido:** Debido a la naturaleza del monitoreo en movimiento, la señal del ECG puede presentar artefactos si la prenda no ejerce la compresión adecuada sobre el torso.
+
+<div>&nbsp;</div>
+
+<!-- About the Project -->
+## 🌟 Sobre el Proyecto
+
+ARES (Arrhythmia Real-time Evaluation System) es un sistema portátil de monitoreo electrocardiográfico continuo. Consiste en un circuito impreso (PCB) con componentes SMD, basado en un microcontrolador ESP32 y un módulo analógico AD8232, completamente integrado en un peto deportivo de compresión. 
+
+El objetivo es capturar, filtrar y transmitir la actividad eléctrica del corazón en tiempo real hacia una plataforma web hosteada en Vercel, permitiendo la detección temprana de anomalías cardíacas.
+
+<div align="center"> 
+  <!-- Sube una captura de tu dashboard web a docs/assets/ -->
+  <img src="docs/assets/dashboard_screenshot.png" alt="ARES Dashboard Web" width="Auto" height="Auto" />
+</div>
+
+<!-- Features -->
+### 🎯 Características
+
+- **Captura Biométrica:** Lectura de señal ECG de un canal mediante el front-end AD8232.
+- **Factor de Forma Ergonómico:** Hardware miniaturizado con componentes SMD para no interferir con la actividad física.
+- **Conectividad:** Transmisión inalámbrica de la telemetría utilizando la pila Wi-Fi/BLE del ESP32.
+- **Visualización Remota:** Interfaz gráfica web para el monitoreo en tiempo real por parte del usuario o personal médico.
+- **Wearable Integrado:** Diseñado específicamente para funcionar dentro de la estructura de una prenda deportiva.
+
+<div>&nbsp;</div>
+
+<!-- Hardware -->
+## 👀 Diseño de Hardware
+
+<table>
+  <tr>
+    <td style="text-align: center;">
+      <!-- Sube una imagen de tu PCB o diagrama a docs/assets/ -->
+      <img src="docs/assets/pcb_render.png" alt="PCB ARES" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
+      <p style="font-style: italic; font-size: 14px; margin-top: 5px;">Render de la PCB (ESP32 + AD8232)</p>
+    </td>    
+    <td style="text-align: center;">
+      <!-- Sube una foto del chaleco o prototipo a docs/assets/ -->
+      <img src="docs/assets/vest_prototype.png" alt="Peto Deportivo ARES" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
+      <p style="font-style: italic; font-size: 14px; margin-top: 5px;">Integración en el peto deportivo negro</p>
+    </td>
+  </tr>
+</table>
+
+<!-- Contact -->
+## 🤝 Contacto
+
+Para desarrollo, auditoría de hardware o consultas de inversión:
+
+Tu Nombre - [@tucuentax](https://twitter.com/tuusuario) - tu.email@ejemplo.com
+
+Link del Proyecto: [https://github.com/impatrq/ARES](https://github.com/impatrq/ARES)
+
+<!-- Acknowledgments -->
+## 💎 Reconocimientos 
+
+**Bibliotecas y referencias utilizadas en el desarrollo de ARES:**
+ - [Espressif ESP32 Arduino Core](https://github.com/espressif/arduino-esp32)
+ - [Analog Devices AD8232 Datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/ad8232.pdf)
