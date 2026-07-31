@@ -73,13 +73,12 @@ El diseño del hardware, diagramas esquemáticos y la API de transmisión de dat
 <!-- About the Project -->
 ## 🌟 Sobre el Proyecto
 
-ARES (Arrhythmia Real-time Evaluation System) es un sistema portátil de monitoreo electrocardiográfico continuo. Consiste en un circuito impreso (PCB) con componentes SMD, basado en un microcontrolador ESP32 y un módulo analógico AD8232, completamente integrado en un peto deportivo de compresión. 
+ARES (Arrhythmia Real-time Evaluation System) es un sistema portátil de monitoreo electrocardiográfico continuo. Consiste en un circuito impreso (PCB) con componentes SMD, basado en un microcontrolador ESP32 y un módulo analógico AD8232, completamente integrado en un top deportivo. 
 
-El objetivo es capturar, filtrar y transmitir la actividad eléctrica del corazón en tiempo real hacia una plataforma web hosteada en Vercel, permitiendo la detección temprana de anomalías cardíacas.
+El objetivo es capturar, filtrar y transmitir la actividad eléctrica del corazón en tiempo real hacia una plataforma web, permitiendo la detección temprana de anomalías cardíacas.
 
 <div align="center"> 
-  <!-- Sube una captura de tu dashboard web a docs/assets/ -->
-  <img src="docs/assets/dashboard_screenshot.png" alt="ARES Dashboard Web" width="Auto" height="Auto" />
+  <img src="Docs/Assets/pagina-web.png" alt="ARES Página Web" width="Auto" height="Auto" />
 </div>
 
 <!-- Features -->
@@ -99,14 +98,12 @@ El objetivo es capturar, filtrar y transmitir la actividad eléctrica del coraz�
 <table>
   <tr>
     <td style="text-align: center;">
-      <!-- Sube una imagen de tu PCB o diagrama a docs/assets/ -->
-      <img src="docs/assets/pcb_render.png" alt="PCB ARES" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
+      <img src="Docs/Assets/pcb-render.png" alt="PCB ARES" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
       <p style="font-style: italic; font-size: 14px; margin-top: 5px;">Render de la PCB (ESP32 + AD8232)</p>
     </td>    
     <td style="text-align: center;">
-      <!-- Sube una foto del chaleco o prototipo a docs/assets/ -->
-      <img src="docs/assets/vest_prototype.png" alt="Peto Deportivo ARES" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
-      <p style="font-style: italic; font-size: 14px; margin-top: 5px;">Integración en el peto deportivo negro</p>
+      <img src="Docs/Assets/top-deportivo.png" alt="Top Deportivo ARES" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
+      <p style="font-style: italic; font-size: 14px; margin-top: 5px;">Integración en el top deportivo negro</p>
     </td>
   </tr>
 </table>
