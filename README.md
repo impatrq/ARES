@@ -1,23 +1,21 @@
 <div align="center">
 
-  <img src="docs/assets/banner.png" alt="ARES Banner" width="100%"/>
+<img src="Docs/Assets/banner.png" alt="ARES Banner" width="100%"/>
 
-  <br/>
-  <br/>
+<br/>
+<br/>
 
-  <p align="center">
+<p align="center">
+<a href="https://github.com/impatrq/ARES"><img src="https://img.shields.io/static/v1?label=impatrq&message=ARES&color=b83939&logo=github&logoColor=white"/></a>
+<a href="https://github.com/impatrq/ARES"><img src="https://img.shields.io/github/stars/impatrq/ARES?style=social"/></a>
+<img src="https://img.shields.io/badge/Hardware-ESP32%20%2B%20AD8232-b83939"/>
+<img src="https://img.shields.io/badge/Status-Prototipo-b83939"/>
+</p>
 
-    <a href="https://github.com/impatrq/ARES"><img src="https://img.shields.io/static/v1?label=impatrq&message=ARES&color=b83939&logo=github&logoColor=white"/></a>
-    <a href="https://github.com/impatrq/ARES"><img src="https://img.shields.io/github/stars/impatrq/ARES?style=social"/></a>
-    <img src="https://img.shields.io/badge/Hardware-ESP32%20%2B%20AD8232-b83939"/>
-    <img src="https://img.shields.io/badge/Status-Prototipo-b83939"/>
-  </p>
-
-  <p align="center">
-
-    <a href="https://instagram.com/ares.proyecto/"><img src="https://img.shields.io/badge/Instagram-b83939?logo=instagram&logoColor=white"/></a>
-    <a href="https://tu-sitio-web.com/"><img src="https://img.shields.io/badge/Website-b83939?logo=googlechrome&logoColor=white"/></a>
-  </p>
+<p align="center">
+<a href="https://instagram.com/ares.proyecto/"><img src="https://img.shields.io/badge/Instagram-b83939?logo=instagram&logoColor=white"/></a>
+<a href="https://tu-sitio-web.com/"><img src="https://img.shields.io/badge/Website-b83939?logo=googlechrome&logoColor=white"/></a>
+</p>
 
 </div>
 
@@ -118,7 +116,7 @@ El objetivo es capturar, filtrar y transmitir la actividad eléctrica del coraz�
 
 Para desarrollo, auditoría de hardware o consultas de inversión:
 
-Tu Nombre - [@tucuentax](https://twitter.com/tuusuario) - tu.email@ejemplo.com
+Mail - proyectoares26@gmail.com
 
 Link del Proyecto: [https://github.com/impatrq/ARES](https://github.com/impatrq/ARES)
 
