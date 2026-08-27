@@ -21,11 +21,13 @@
 
 ## 📖 Documentación del Proyecto
 
-El diseño del hardware, diagramas esquemáticos y la API de transmisión de datos están documentados en la carpeta `/docs`. Para replicar la placa o entender el flujo de señales del ECG, revisa la documentación técnica completa.
+Toda la documentación técnica y de seguimiento del sistema se encuentra centralizada en el directorio `/docs`.
+
+* **Carpeta de Campo (`/docs/carpeta_de_campo/`):** Contiene el registro iterativo del proyecto en formato `.pdf`. Documenta detalladamente el progreso semanal, las decisiones tomadas y el aporte técnico individual de cada integrante a lo largo del ciclo de desarrollo anual.
   
 <div>&nbsp;</div>
 
-<h2>🛠 Estado de los Componentes y Fiabilidad</h2>
+<h2>🛠 Componentes </h2>
 
 <table>
   <thead>
@@ -92,22 +94,6 @@ El objetivo es capturar, filtrar y transmitir la actividad eléctrica del coraz�
 
 <div>&nbsp;</div>
 
-<!-- Hardware -->
-## 👀 Diseño de Hardware
-
-<table>
-  <tr>
-    <td style="text-align: center;">
-      <img src="Docs/Assets/pcb-render.png" alt="PCB ARES" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
-      <p style="font-style: italic; font-size: 14px; margin-top: 5px;">Render de la PCB (ESP32 + AD8232)</p>
-    </td>    
-    <td style="text-align: center;">
-      <img src="Docs/Assets/top-deportivo.png" alt="Top Deportivo ARES" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
-      <p style="font-style: italic; font-size: 14px; margin-top: 5px;">Integración en el top deportivo negro</p>
-    </td>
-  </tr>
-</table>
-
 <!-- Contact -->
 ## 🤝 Contacto
 
@@ -116,10 +102,3 @@ Para desarrollo, auditoría de hardware o consultas de inversión:
 Mail - proyectoares26@gmail.com
 
 Link del Proyecto: [https://github.com/impatrq/ARES](https://github.com/impatrq/ARES)
-
-<!-- Acknowledgments -->
-## 💎 Reconocimientos 
-
-**Bibliotecas y referencias utilizadas en el desarrollo de ARES:**
- - [Espressif ESP32 Arduino Core](https://github.com/espressif/arduino-esp32)
- - [Analog Devices AD8232 Datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/ad8232.pdf)
