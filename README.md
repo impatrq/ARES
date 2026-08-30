@@ -61,13 +61,13 @@ El proyecto resuelve la captura y transmisión de bioseñales en movimiento medi
   <img src="Docs/Assets/pagina-web.png" alt="ARES Página Web" width="Auto" height="Auto" />
 </div>
 
-## 🎯 Características
+## 🎯 Características Principales
 
-- **Captura Biométrica:** Lectura de señal ECG de un canal mediante el front-end AD8232.
-- **Factor de Forma Ergonómico:** Hardware miniaturizado con componentes SMD para no interferir con la actividad física.
-- **Conectividad:** Transmisión inalámbrica de la telemetría utilizando la pila Wi-Fi/BLE del ESP32.
-- **Visualización Remota:** Interfaz gráfica web para el monitoreo en tiempo real por parte del usuario o personal médico.
-- **Wearable Integrado:** Diseñado específicamente para funcionar dentro de la estructura de una prenda deportiva.
+* **Adquisición de Señal de Alta Resolución:** Captura de ECG de derivación única (un canal) mediante el *front-end* analógico AD8232. La digitalización se delega a un ADC dedicado de 16 bits (ADS1115), garantizando una lectura fiel sin el ruido inherente al conversor interno del microcontrolador.
+* **Telemetría de Baja Latencia:** Transmisión continua de paquetes de datos utilizando la pila Wi-Fi del ESP32-S3. Arquitectura optimizada para sostener el flujo de telemetría en tiempo real hacia la nube.
+* **Gestión de Energía Autónoma:** Circuito de carga y protección integrado (basado en el TP4056) para operar con baterías de litio, asegurando ciclos de carga seguros y autonomía durante la actividad física.
+* **Factor de Forma Wearable:** PCB miniaturizado con diseño enteramente SMD (Surface-Mount Device). Todo el hardware se aloja y oculta en la estructura de un top deportivo de compresión, utilizando electrodos textiles para evitar la fricción y los adhesivos médicos.
+* **Visualización Web de Alto Rendimiento:** *Dashboard* remoto desplegado en la nube que procesa y renderiza la señal cardíaca a 60fps. Interfaz responsiva diseñada para el monitoreo visual fluido del usuario durante las pruebas de campo.
 
 <div>&nbsp;</div>
 
