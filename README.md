@@ -27,52 +27,34 @@ Toda la documentación técnica y de seguimiento del sistema se encuentra centra
   
 <div>&nbsp;</div>
 
-<h2>🛠 Componentes </h2>
+## 🛠 Componentes Utilizados
 
-<table>
-  <thead>
-    <tr>
-      <th>Componente</th>
-      <th>Estado</th>
-      <th>Fiabilidad</th>
-      <th>Notas</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Firmware ESP32</strong></td>
-      <td>Estable</td>
-      <td>Alta</td>
-      <td>Transmisión de datos sin pérdida de paquetes bajo conexión Wi-Fi estable. Falta optimizar el modo Deep Sleep.</td>
-    </tr>
-    <tr>
-      <td><strong>Filtro Analógico (AD8232)</strong></td>
-      <td>En pruebas</td>
-      <td>Media</td>
-      <td>El acondicionamiento de la señal es correcto, pero se requiere ajustar los filtros pasivos para reducir el ruido por movimiento del usuario.</td>
-    </tr>
-    <tr>
-      <td><strong>Electrodos en Peto</strong></td>
-      <td>Prototipo</td>
-      <td>Baja</td>
-      <td>Los electrodos textiles integrados en la prenda negra necesitan mejor conductividad con la piel seca.</td>
-    </tr>
-    <tr>
-      <td><strong>Dashboard Web (Vercel)</strong></td>
-      <td>Estable</td>
-      <td>Alta</td>
-      <td>Renderizado de gráficas a 60fps funcional. Latencia inferior a 50ms.</td>
-    </tr>
-  </tbody>
-</table>
+> **Nota:** Las imágenes y descripciones detalladas de cada elemento se encuentran en el directorio `/hardware/componentes/`. Las hojas de datos (*datasheets*) de referencia se ubican en `/hardware/datasheets/`.
 
-> [!WARNING]
-> - **Descargo de Responsabilidad Médica:** ARES es un proyecto de investigación y desarrollo. Actualmente **no es un dispositivo médico certificado**. No debe utilizarse para diagnósticos clínicos, soporte vital o toma de decisiones médicas sin la supervisión de un profesional de la salud.
-> - **Sensibilidad al Ruido:** Debido a la naturaleza del monitoreo en movimiento, la señal del ECG puede presentar artefactos si la prenda no ejerce la compresión adecuada sobre el torso.
+* **Microcontrolador (ESP32-S3):** 
+  * **Estado:** Estable | **Fiabilidad:** Alta
+  * **Notas:** Ejecuta el firmware principal. Mantiene la transmisión de datos sin pérdida de paquetes bajo conexión Wi-Fi estable. Actualmente falta optimizar el modo Deep Sleep para mejorar la eficiencia energética.
 
-<div>&nbsp;</div>
+* **Filtro Analógico / Sensor ECG (AD8232):** 
+  * **Estado:** En pruebas | **Fiabilidad:** Media
+  * **Notas:** El acondicionamiento de la señal base es correcto, pero se requiere ajustar los filtros pasivos por hardware para reducir el ruido inducido por el movimiento del usuario.
 
-<!-- About the Project -->
+* **Conversor Analógico-Digital (ADS1115):** 
+  * **Estado:** Integrado | **Fiabilidad:** Alta
+  * **Notas:** Resuelve la falta de linealidad del ADC interno del ESP32. Aporta conversión de 16 bits, garantizando la resolución necesaria para interpretar la señal cardíaca del AD8232 sin distorsiones digitales.
+
+* **Módulo de Carga (TP4056):** 
+  * **Estado:** Estable | **Fiabilidad:** Alta
+  * **Notas:** Gestiona la carga y protección de la batería de litio, asegurando la alimentación autónoma y segura del circuito completo.
+
+---
+
+> ⚠️ **Descargo de Responsabilidad Médica:** 
+> ARES es un proyecto de investigación y desarrollo. Actualmente no es un dispositivo médico certificado. No debe utilizarse para diagnósticos clínicos, soporte vital o toma de decisiones médicas sin la supervisión de un profesional de la salud.
+
+> ⚠️ **Sensibilidad al Ruido:** 
+> Debido a la naturaleza del monitoreo en movimiento, la señal del ECG puede presentar artefactos si la prenda negra no ejerce la compresión adecuada sobre el torso y los electrodos pierden conductividad con la piel seca.
+
 ## 🌟 Sobre el Proyecto
 
 ARES (Arrhythmia Real-time Evaluation System) es un sistema portátil de monitoreo electrocardiográfico continuo. Consiste en un circuito impreso (PCB) con componentes SMD, basado en un microcontrolador ESP32 y un módulo analógico AD8232, completamente integrado en un top deportivo. 
