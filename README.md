@@ -23,7 +23,7 @@
 
 Toda la documentación técnica y de seguimiento del sistema se encuentra centralizada en el directorio `/docs`.
 
-* **Carpeta de Campo (`/docs/carpeta_de_campo/`):** Contiene el registro iterativo del proyecto en formato `.pdf`. Documenta detalladamente el progreso semanal, las decisiones tomadas y el aporte técnico individual de cada integrante a lo largo del ciclo de desarrollo anual.
+* **Carpeta de Campo** `/docs/carpeta_de_campo/`: Contiene el registro iterativo del proyecto en formato `.pdf`. Documenta detalladamente el progreso semanal, las decisiones tomadas y el aporte técnico individual de cada integrante a lo largo del ciclo de desarrollo anual.
   
 <div>&nbsp;</div>
 
@@ -42,7 +42,8 @@ Toda la documentación técnica y de seguimiento del sistema se encuentra centra
   * Gestiona la carga y protección de la batería de litio, asegurando la alimentación autónoma y segura del circuito completo.
 
 > [!NOTE] 
-> Las imágenes y descripciones detalladas de cada elemento se encuentran en el directorio `/hardware/componentes/`. Las hojas de datos de referencia se ubican en `/hardware/datasheets/`.
+> - Las imágenes y descripciones detalladas de cada elemento se encuentran en el directorio `/hardware/componentes/`. 
+> - Las hojas de datos de referencia se ubican en `/docs/datasheets/`.
 
 <div>&nbsp;</div>
 
