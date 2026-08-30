@@ -32,28 +32,16 @@ Toda la documentación técnica y de seguimiento del sistema se encuentra centra
 > **Nota:** Las imágenes y descripciones detalladas de cada elemento se encuentran en el directorio `/hardware/componentes/`. Las hojas de datos (*datasheets*) de referencia se ubican en `/hardware/datasheets/`.
 
 * **Microcontrolador (ESP32-S3):** 
-  * **Estado:** Estable | **Fiabilidad:** Alta
-  * **Notas:** Ejecuta el firmware principal. Mantiene la transmisión de datos sin pérdida de paquetes bajo conexión Wi-Fi estable. Actualmente falta optimizar el modo Deep Sleep para mejorar la eficiencia energética.
+  * Ejecuta el firmware principal. Mantiene la transmisión de datos sin pérdida de paquetes bajo conexión Wi-Fi estable. Actualmente falta optimizar el modo Deep Sleep para mejorar la eficiencia energética.
 
 * **Filtro Analógico / Sensor ECG (AD8232):** 
-  * **Estado:** En pruebas | **Fiabilidad:** Media
-  * **Notas:** El acondicionamiento de la señal base es correcto, pero se requiere ajustar los filtros pasivos por hardware para reducir el ruido inducido por el movimiento del usuario.
+  * El acondicionamiento de la señal base es correcto, pero se requiere ajustar los filtros pasivos por hardware para reducir el ruido inducido por el movimiento del usuario.
 
 * **Conversor Analógico-Digital (ADS1115):** 
-  * **Estado:** Integrado | **Fiabilidad:** Alta
-  * **Notas:** Resuelve la falta de linealidad del ADC interno del ESP32. Aporta conversión de 16 bits, garantizando la resolución necesaria para interpretar la señal cardíaca del AD8232 sin distorsiones digitales.
+  * Resuelve la falta de linealidad del ADC interno del ESP32. Aporta conversión de 16 bits, garantizando la resolución necesaria para interpretar la señal cardíaca del AD8232 sin distorsiones digitales.
 
 * **Módulo de Carga (TP4056):** 
-  * **Estado:** Estable | **Fiabilidad:** Alta
-  * **Notas:** Gestiona la carga y protección de la batería de litio, asegurando la alimentación autónoma y segura del circuito completo.
-
----
-
-> ⚠️ **Descargo de Responsabilidad Médica:** 
-> ARES es un proyecto de investigación y desarrollo. Actualmente no es un dispositivo médico certificado. No debe utilizarse para diagnósticos clínicos, soporte vital o toma de decisiones médicas sin la supervisión de un profesional de la salud.
-
-> ⚠️ **Sensibilidad al Ruido:** 
-> Debido a la naturaleza del monitoreo en movimiento, la señal del ECG puede presentar artefactos si la prenda negra no ejerce la compresión adecuada sobre el torso y los electrodos pierden conductividad con la piel seca.
+  * Gestiona la carga y protección de la batería de litio, asegurando la alimentación autónoma y segura del circuito completo.
 
 ## 🌟 Sobre el Proyecto
 
@@ -65,8 +53,7 @@ El objetivo es capturar, filtrar y transmitir la actividad eléctrica del coraz�
   <img src="Docs/Assets/pagina-web.png" alt="ARES Página Web" width="Auto" height="Auto" />
 </div>
 
-<!-- Features -->
-### 🎯 Características
+## 🎯 Características
 
 - **Captura Biométrica:** Lectura de señal ECG de un canal mediante el front-end AD8232.
 - **Factor de Forma Ergonómico:** Hardware miniaturizado con componentes SMD para no interferir con la actividad física.
@@ -76,7 +63,6 @@ El objetivo es capturar, filtrar y transmitir la actividad eléctrica del coraz�
 
 <div>&nbsp;</div>
 
-<!-- Contact -->
 ## 🤝 Contacto
 
 Para desarrollo, auditoría de hardware o consultas de inversión:
