@@ -41,7 +41,8 @@ Toda la documentación técnica y de seguimiento del sistema se encuentra centra
 * **Módulo de Carga (TP4056):** 
   * Gestiona la carga y protección de la batería de litio, asegurando la alimentación autónoma y segura del circuito completo.
 
-> **Nota:** Las imágenes y descripciones detalladas de cada elemento se encuentran en el directorio `/hardware/componentes/`. Las hojas de datos de referencia se ubican en `/hardware/datasheets/`.
+> [!NOTE] 
+> Las imágenes y descripciones detalladas de cada elemento se encuentran en el directorio `/hardware/componentes/`. Las hojas de datos de referencia se ubican en `/hardware/datasheets/`.
 
 <div>&nbsp;</div>
 
