@@ -42,17 +42,21 @@ Toda la documentación técnica y de seguimiento del sistema se encuentra centra
   * Gestiona la carga y protección de la batería de litio, asegurando la alimentación autónoma y segura del circuito completo.
 
 > [!NOTE] 
-> - Las imágenes y descripciones detalladas de cada elemento se encuentran en el directorio `/hardware/componentes/`. 
-> - Las hojas de datos de referencia se ubican en `/docs/datasheets/`.
+> - Las imágenes y descripciones detalladas de cada elemento se encuentran en `/hardware/componentes/` 
+> - Las hojas de datos de referencia se ubican en `/docs/datasheets/`
 
 <div>&nbsp;</div>
 
 ## 🌟 Sobre el Proyecto
 
-ARES (Arrhythmia Real-time Evaluation System) es un sistema portátil de monitoreo electrocardiográfico continuo. Consiste en un circuito impreso (PCB) con componentes SMD, basado en un microcontrolador ESP32 y un módulo analógico AD8232, completamente integrado en un top deportivo. 
+**ARES** (*Arrhythmia Real-time Evaluation System*) es un sistema IoT *wearable* de grado experimental diseñado para el monitoreo electrocardiográfico continuo y no invasivo. 
 
-El objetivo es capturar, filtrar y transmitir la actividad eléctrica del corazón en tiempo real hacia una plataforma web, permitiendo la detección temprana de anomalías cardíacas.
+El proyecto resuelve la captura y transmisión de bioseñales en movimiento mediante la integración de hardware a medida, firmware de telemetría y una plataforma web, articulándose en los siguientes dominios:
 
+* **Hardware y Acondicionamiento (Electrónica):** Circuito impreso (PCB) propietario con componentes de montaje superficial (SMD). Utiliza un *front-end* analógico AD8232 para la amplificación y filtrado activo de la señal cardíaca, digitalizada con precisión a través de un ADC de 16 bits (ADS1115).
+* **Integración Wearable (Ergonomía):** El sistema electrónico está embebido en un top deportivo de compresión, empleando electrodos en el peto para garantizar el contacto continuo con la piel sin necesidad de adhesivos médicos tradicionales.
+* **Procesamiento y Telemetría (Telecomunicaciones):** Un microcontrolador ESP32-S3 orquesta el muestreo riguroso del ADC y transmite los paquetes de datos por Wi-Fi de forma ininterrumpida y con baja latencia.
+* **Presentación de Datos (Informática):** Los datos son recibidos y renderizados a 60fps en un *dashboard* web responsivo (desplegado en Vercel), permitiendo la evaluación visual de la actividad eléctrica del corazón en tiempo real.
 <div align="center"> 
   <img src="Docs/Assets/pagina-web.png" alt="ARES Página Web" width="Auto" height="Auto" />
 </div>
