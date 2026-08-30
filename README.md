@@ -29,8 +29,6 @@ Toda la documentación técnica y de seguimiento del sistema se encuentra centra
 
 ## 🛠 Componentes Utilizados
 
-> **Nota:** Las imágenes y descripciones detalladas de cada elemento se encuentran en el directorio `/hardware/componentes/`. Las hojas de datos (*datasheets*) de referencia se ubican en `/hardware/datasheets/`.
-
 * **Microcontrolador (ESP32-S3):** 
   * Ejecuta el firmware principal. Mantiene la transmisión de datos sin pérdida de paquetes bajo conexión Wi-Fi estable. Actualmente falta optimizar el modo Deep Sleep para mejorar la eficiencia energética.
 
@@ -42,6 +40,8 @@ Toda la documentación técnica y de seguimiento del sistema se encuentra centra
 
 * **Módulo de Carga (TP4056):** 
   * Gestiona la carga y protección de la batería de litio, asegurando la alimentación autónoma y segura del circuito completo.
+
+> [**Nota:**] Las imágenes y descripciones detalladas de cada elemento se encuentran en el directorio `/hardware/componentes/`. Las hojas de datos (*datasheets*) de referencia se ubican en `/hardware/datasheets/`.
 
 ## 🌟 Sobre el Proyecto
 
