@@ -49,25 +49,17 @@ Toda la documentación técnica y de seguimiento del sistema se encuentra centra
 
 ## 🌟 Sobre el Proyecto
 
-**ARES** (*Arrhythmia Real-time Evaluation System*) es un sistema IoT *wearable* de grado experimental diseñado para el monitoreo electrocardiográfico continuo y no invasivo. 
+**ARES** (*Arrhythmia Real-time Evaluation System*) es un sistema IoT diseñado para el monitoreo electrocardiográfico continuo, que busca reemplazar cirugías invasivas. 
 
 El proyecto resuelve la captura y transmisión de bioseñales en movimiento mediante la integración de hardware a medida, firmware de telemetría y una plataforma web, articulándose en los siguientes dominios:
 
-* **Hardware y Acondicionamiento (Electrónica):** Circuito impreso (PCB) propietario con componentes de montaje superficial (SMD). Utiliza un *front-end* analógico AD8232 para la amplificación y filtrado activo de la señal cardíaca, digitalizada con precisión a través de un ADC de 16 bits (ADS1115).
-* **Integración Wearable (Ergonomía):** El sistema electrónico está embebido en un top deportivo de compresión, empleando electrodos en el peto para garantizar el contacto continuo con la piel sin necesidad de adhesivos médicos tradicionales.
-* **Procesamiento y Telemetría (Telecomunicaciones):** Un microcontrolador ESP32-S3 orquesta el muestreo riguroso del ADC y transmite los paquetes de datos por Wi-Fi de forma ininterrumpida y con baja latencia.
-* **Presentación de Datos (Informática):** Los datos son recibidos y renderizados a 60fps en un *dashboard* web responsivo (desplegado en Vercel), permitiendo la evaluación visual de la actividad eléctrica del corazón en tiempo real.
-<div align="center"> 
-  <img src="Docs/Assets/pagina-web.png" alt="ARES Página Web" width="Auto" height="Auto" />
-</div>
-
 ## 🎯 Características Principales
 
-* **Adquisición de Señal de Alta Resolución:** Captura de ECG de derivación única (un canal) mediante el *front-end* analógico AD8232. La digitalización se delega a un ADC dedicado de 16 bits (ADS1115), garantizando una lectura fiel sin el ruido inherente al conversor interno del microcontrolador.
-* **Telemetría de Baja Latencia:** Transmisión continua de paquetes de datos utilizando la pila Wi-Fi del ESP32-S3. Arquitectura optimizada para sostener el flujo de telemetría en tiempo real hacia la nube.
-* **Gestión de Energía Autónoma:** Circuito de carga y protección integrado (basado en el TP4056) para operar con baterías de litio, asegurando ciclos de carga seguros y autonomía durante la actividad física.
-* **Factor de Forma Wearable:** PCB miniaturizado con diseño enteramente SMD (Surface-Mount Device). Todo el hardware se aloja y oculta en la estructura de un top deportivo de compresión, utilizando electrodos textiles para evitar la fricción y los adhesivos médicos.
-* **Visualización Web de Alto Rendimiento:** *Dashboard* remoto desplegado en la nube que procesa y renderiza la señal cardíaca a 60fps. Interfaz responsiva diseñada para el monitoreo visual fluido del usuario durante las pruebas de campo.
+* **Adquisición Analógica-Digital (Hardware):** Captura de ECG de un canal mediante un *front-end* analógico (AD8232) con filtrado activo. La digitalización se delega a un ADC de 16 bits (ADS1115), garantizando una resolución precisa y eliminando el ruido inherente al conversor interno del microcontrolador.
+* **Procesamiento y Telemetría:** Un ESP32-S3 orquesta el muestreo estricto de los datos y ejecuta la transmisión continua e ininterrumpida de paquetes vía Wi-Fi, manteniendo una latencia optimizada hacia la nube.
+* **Gestión Energética Autónoma:** El PCB cuenta con un circuito de carga y protección basado en el TP4056, diseñado para operar con baterías de litio y asegurar la autonomía del sistema durante las pruebas físicas.
+* **Integración Wearable (Ergonomía):** Circuito miniaturizado (100% componentes SMD) embebido en un top deportivo de compresión. Utiliza electrodos textiles en el peto para mantener el contacto con la piel, eliminando adhesivos médicos y fricción mecánica.
+* **Renderizado Web en Tiempo Real (Software):** Los paquetes telemétricos son recibidos por un *dashboard* remoto (desplegado en Vercel) que procesa y grafica la señal cardíaca a 60fps, ofreciendo una interfaz responsiva para la evaluación visual inmediata.
 
 <div>&nbsp;</div>
 
