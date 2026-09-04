@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* ARES Design System — médico-tecnológico premium */
+    --background: 35 30% 97%;
+    --foreground: 350 25% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 350 25% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 350 25% 12%;
+
+    /* Bordó ARES */
+    --primary: 354 55% 32%;
+    --primary-foreground: 35 40% 97%;
+    --primary-glow: 354 70% 48%;
+
+    --secondary: 350 15% 95%;
+    --secondary-foreground: 354 55% 22%;
+
+    --muted: 30 15% 94%;
+    --muted-foreground: 350 10% 40%;
+
+    --accent: 354 70% 48%;
+    --accent-foreground: 35 40% 97%;
+
+    /* Estado: saludable */
+    --healthy: 158 55% 42%;
+    --healthy-foreground: 0 0% 100%;
+    /* Estado: alerta */
+    --alert: 0 78% 52%;
+    --alert-foreground: 0 0% 100%;
+
+    --destructive: 0 78% 52%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 350 15% 88%;
+    --input: 350 15% 88%;
+    --ring: 354 55% 32%;
+
+    --radius: 0.85rem;
+
+    /* Gradientes */
+    --gradient-primary: linear-gradient(135deg, hsl(354 55% 22%), hsl(354 70% 42%));
+    --gradient-hero: radial-gradient(ellipse at top right, hsl(354 70% 35% / 0.95), hsl(354 60% 12%) 70%);
+    --gradient-soft: linear-gradient(180deg, hsl(35 30% 97%), hsl(30 25% 94%));
+    --gradient-glow: radial-gradient(circle, hsl(354 70% 55% / 0.35), transparent 70%);
+
+    /* Sombras */
+    --shadow-elegant: 0 20px 50px -20px hsl(354 55% 22% / 0.35);
+    --shadow-card: 0 8px 30px -12px hsl(354 30% 20% / 0.18);
+    --shadow-glow: 0 0 60px hsl(354 70% 55% / 0.45);
+
+    --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 354 30% 6%;
+    --foreground: 35 30% 95%;
+    --card: 354 25% 9%;
+    --card-foreground: 35 30% 95%;
+    --popover: 354 25% 9%;
+    --popover-foreground: 35 30% 95%;
+    --primary: 354 70% 55%;
+    --primary-foreground: 354 30% 6%;
+    --secondary: 354 20% 14%;
+    --secondary-foreground: 35 30% 95%;
+    --muted: 354 15% 14%;
+    --muted-foreground: 35 10% 65%;
+    --accent: 354 70% 55%;
+    --accent-foreground: 354 30% 6%;
+    --destructive: 0 78% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 354 20% 18%;
+    --input: 354 20% 18%;
+    --ring: 354 70% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "cv11";
+  }
+}
+
+/* ECG line drawing animation */
+@layer utilities {
+  .ecg-path {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: ecg-draw 4s linear infinite;
+  }
+  @keyframes ecg-draw {
+    0% { stroke-dashoffset: 2000; }
+    60% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -2000; }
+  }
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bg-hero { background: var(--gradient-hero); }
+  .bg-soft { background: var(--gradient-soft); }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .shadow-card-soft { box-shadow: var(--shadow-card); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  @keyframes pulse-heart {
+    0%, 100% { transform: scale(1); }
+    20% { transform: scale(1.15); }
+    40% { transform: scale(1); }
+  }
+  .animate-pulse-heart { animation: pulse-heart 1.4s ease-in-out infinite; }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .animate-float { animation: float-slow 6s ease-in-out infinite; }
+}
