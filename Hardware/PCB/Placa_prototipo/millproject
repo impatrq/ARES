@@ -1,0 +1,53 @@
+# This is an example config file for pcb2gcode.
+# Rename this file "millproject" and place it in the same directory as your
+# gerber files to save typing
+# <option>=false is implicit, it is present just for clearness
+
+# You may want to uncomment and change those in local project files (or you
+# can specify them directly as command line arguments)
+
+
+#front=F_Cu.gbr
+back=B_Cu.gbr
+#outline=Edge_Cuts.gbr
+#drill=Drl.drl
+
+# Common options
+metric=true
+metricoutput=true
+mirror-absolute=true
+zchange=0.0000
+zero-start=true
+zsafe=2.0000
+
+# Mill options
+mill-feed=600
+mill-speed=10000
+offset=0.05
+extra-passes=0
+zwork=-0.1
+
+# Drill options
+drill-feed=1000
+drill-side=front
+drill-speed=10000
+milldrill=false
+onedrill=true
+zdrill=-0.1000
+
+# Outline options
+bridges=1
+zbridges=-0.5
+cut-feed=600
+cut-side=front
+cut-infeed=10.0000
+cut-speed=10000
+cutter-diameter=0.8
+fill-outline=false
+zcut=-0.2000
+
+software=custom
+
+# Not supported commands
+nog81=true
+nog64=true
