@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "719914284267",
+    "firebase_url": "https://ares-ecg-default-rtdb.firebaseio.com",
+    "project_id": "ares-ecg",
+    "storage_bucket": "ares-ecg.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719914284267:android:d5a4efdcfe77a146f63aae",
+        "android_client_info": {
+          "package_name": "com.example.ares_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4TFGiFXf9X4YTaPOJ67GfJJdfsxuMfR0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
