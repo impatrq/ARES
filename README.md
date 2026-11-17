@@ -14,7 +14,8 @@
 
 <p align="center">
 <a href="https://instagram.com/ares.proyecto/"><img src="https://img.shields.io/badge/Instagram-b83939?logo=instagram&logoColor=white"/></a>
-<a href="https://tu-sitio-web.com/"><img src="https://img.shields.io/badge/Website-b83939?logo=googlechrome&logoColor=white"/></a>
+<a href="hhttps://proyectoares.netlify.app/"><img src="https://img.shields.io/badge/Website-b83939?logo=googlechrome&logoColor=white"/></a>
+<a href="https://www.youtube.com/watch?v=_b7jgoNVcA0"><img src="https://img.shields.io/badge/YouTube-00bcd4?logo=youtube&logoColor=black"/></a>
 </p>
 
 </div>
@@ -54,16 +55,16 @@ Toda la documentación técnica y de seguimiento del sistema se encuentra centra
 <table>
   <tr>
     <td style="text-align: center;">
-      <img src="Docs/Assets/" alt="Version 1" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
+      <img src="Docs/Assets/proto.jpg" alt="Version 1" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
       <p style="font-style: italic; font-size: 14px; margin-top: 5px;">protoboard</p>
     </td>    
     <td style="text-align: center;">
-      <img src="Docs/Assets/" alt="Version 2" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
+      <img src="Docs/Assets/kicad.png" alt="Version 2" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
       <p style="font-style: italic; font-size: 14px; margin-top: 5px;">placa tht</p>
     </td>
     </td>    
     <td style="text-align: center;">
-      <img src="Docs/Assets/" alt="Version 3" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
+      <img src="Docs/Assets/final.jpg" alt="Version 3" style="width: 400px; border: 1px solid #ccc; border-radius: 5px;">
       <p style="font-style: italic; font-size: 14px; margin-top: 5px;">placa final</p>
     </td>
   </tr>
